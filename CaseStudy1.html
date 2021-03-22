@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Caitlin Endler and Rashmi Patel" />
+
+
+<title>Case Study 1</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">My Website</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">About</a>
+</li>
+<li>
+  <a href="CaseStudy1.html">Case Study 1</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Case Study 1</h1>
+<h4 class="author">Caitlin Endler and Rashmi Patel</h4>
+<h4 class="date">2/21/2021</h4>
+
+</div>
+
+
+<p>Budweiser is exploring the craft brewery market. We will review current trends for beer in this industry and provide insight for growth opportunities in the market.</p>
+<p>Import and inspect data</p>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## -- Attaching packages --------------------------------------- tidyverse 1.3.0 --</code></pre>
+<pre><code>## v ggplot2 3.3.3     v purrr   0.3.4
+## v tibble  3.0.4     v dplyr   1.0.2
+## v tidyr   1.1.2     v stringr 1.4.0
+## v readr   1.4.0     v forcats 0.5.0</code></pre>
+<pre><code>## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(class)
+library(maps)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;maps&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:purrr&#39;:
+## 
+##     map</code></pre>
+<pre class="r"><code>library(caret)</code></pre>
+<pre><code>## Loading required package: lattice</code></pre>
+<pre><code>## 
+## Attaching package: &#39;caret&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:purrr&#39;:
+## 
+##     lift</code></pre>
+<pre class="r"><code>#Read Beers.csv
+beers_data=read.csv(file.choose(), header=TRUE)
+head(beers_data)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["Name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["Beer_ID"],"name":[2],"type":["int"],"align":["right"]},{"label":["ABV"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["IBU"],"name":[4],"type":["int"],"align":["right"]},{"label":["Brewery_id"],"name":[5],"type":["int"],"align":["right"]},{"label":["Style"],"name":[6],"type":["chr"],"align":["left"]},{"label":["Ounces"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"Pub Beer","2":"1436","3":"0.050","4":"NA","5":"409","6":"American Pale Lager","7":"12","_rn_":"1"},{"1":"Devil's Cup","2":"2265","3":"0.066","4":"NA","5":"178","6":"American Pale Ale (APA)","7":"12","_rn_":"2"},{"1":"Rise of the Phoenix","2":"2264","3":"0.071","4":"NA","5":"178","6":"American IPA","7":"12","_rn_":"3"},{"1":"Sinister","2":"2263","3":"0.090","4":"NA","5":"178","6":"American Double / Imperial IPA","7":"12","_rn_":"4"},{"1":"Sex and Candy","2":"2262","3":"0.075","4":"NA","5":"178","6":"American IPA","7":"12","_rn_":"5"},{"1":"Black Exodus","2":"2261","3":"0.077","4":"NA","5":"178","6":"Oatmeal Stout","7":"12","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<pre class="r"><code>dim(beers_data)</code></pre>
+<pre><code>## [1] 2410    7</code></pre>
+<pre class="r"><code>Beers=beers_data%&gt;%rename(Beer_Name=Name)
+head(Beers)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["Beer_Name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["Beer_ID"],"name":[2],"type":["int"],"align":["right"]},{"label":["ABV"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["IBU"],"name":[4],"type":["int"],"align":["right"]},{"label":["Brewery_id"],"name":[5],"type":["int"],"align":["right"]},{"label":["Style"],"name":[6],"type":["chr"],"align":["left"]},{"label":["Ounces"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"Pub Beer","2":"1436","3":"0.050","4":"NA","5":"409","6":"American Pale Lager","7":"12","_rn_":"1"},{"1":"Devil's Cup","2":"2265","3":"0.066","4":"NA","5":"178","6":"American Pale Ale (APA)","7":"12","_rn_":"2"},{"1":"Rise of the Phoenix","2":"2264","3":"0.071","4":"NA","5":"178","6":"American IPA","7":"12","_rn_":"3"},{"1":"Sinister","2":"2263","3":"0.090","4":"NA","5":"178","6":"American Double / Imperial IPA","7":"12","_rn_":"4"},{"1":"Sex and Candy","2":"2262","3":"0.075","4":"NA","5":"178","6":"American IPA","7":"12","_rn_":"5"},{"1":"Black Exodus","2":"2261","3":"0.077","4":"NA","5":"178","6":"Oatmeal Stout","7":"12","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<pre class="r"><code>#Read Breweries.csv
+breweries_data=read.csv(file.choose(), header=TRUE)
+head(breweries_data)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["Brew_ID"],"name":[1],"type":["int"],"align":["right"]},{"label":["Name"],"name":[2],"type":["chr"],"align":["left"]},{"label":["City"],"name":[3],"type":["chr"],"align":["left"]},{"label":["State"],"name":[4],"type":["chr"],"align":["left"]}],"data":[{"1":"1","2":"NorthGate Brewing","3":"Minneapolis","4":"MN","_rn_":"1"},{"1":"2","2":"Against the Grain Brewery","3":"Louisville","4":"KY","_rn_":"2"},{"1":"3","2":"Jack's Abby Craft Lagers","3":"Framingham","4":"MA","_rn_":"3"},{"1":"4","2":"Mike Hess Brewing Company","3":"San Diego","4":"CA","_rn_":"4"},{"1":"5","2":"Fort Point Beer Company","3":"San Francisco","4":"CA","_rn_":"5"},{"1":"6","2":"COAST Brewing Company","3":"Charleston","4":"SC","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<pre class="r"><code>dim(breweries_data)</code></pre>
+<pre><code>## [1] 558   4</code></pre>
+<pre class="r"><code>Breweries=breweries_data%&gt;%rename(Brewery_id=Brew_ID,Brewery_Name=Name)
+head(Breweries)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["Brewery_id"],"name":[1],"type":["int"],"align":["right"]},{"label":["Brewery_Name"],"name":[2],"type":["chr"],"align":["left"]},{"label":["City"],"name":[3],"type":["chr"],"align":["left"]},{"label":["State"],"name":[4],"type":["chr"],"align":["left"]}],"data":[{"1":"1","2":"NorthGate Brewing","3":"Minneapolis","4":"MN","_rn_":"1"},{"1":"2","2":"Against the Grain Brewery","3":"Louisville","4":"KY","_rn_":"2"},{"1":"3","2":"Jack's Abby Craft Lagers","3":"Framingham","4":"MA","_rn_":"3"},{"1":"4","2":"Mike Hess Brewing Company","3":"San Diego","4":"CA","_rn_":"4"},{"1":"5","2":"Fort Point Beer Company","3":"San Francisco","4":"CA","_rn_":"5"},{"1":"6","2":"COAST Brewing Company","3":"Charleston","4":"SC","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>Question 1: How many breweries are present in each state?</p>
+<pre class="r"><code>#summarize data
+Brew=Breweries%&gt;%group_by(State)%&gt;%summarise(TotalBreweries=n())</code></pre>
+<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
+<pre class="r"><code>Brew</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["State"],"name":[1],"type":["chr"],"align":["left"]},{"label":["TotalBreweries"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"AK","2":"7"},{"1":"AL","2":"3"},{"1":"AR","2":"2"},{"1":"AZ","2":"11"},{"1":"CA","2":"39"},{"1":"CO","2":"47"},{"1":"CT","2":"8"},{"1":"DC","2":"1"},{"1":"DE","2":"2"},{"1":"FL","2":"15"},{"1":"GA","2":"7"},{"1":"HI","2":"4"},{"1":"IA","2":"5"},{"1":"ID","2":"5"},{"1":"IL","2":"18"},{"1":"IN","2":"22"},{"1":"KS","2":"3"},{"1":"KY","2":"4"},{"1":"LA","2":"5"},{"1":"MA","2":"23"},{"1":"MD","2":"7"},{"1":"ME","2":"9"},{"1":"MI","2":"32"},{"1":"MN","2":"12"},{"1":"MO","2":"9"},{"1":"MS","2":"2"},{"1":"MT","2":"9"},{"1":"NC","2":"19"},{"1":"ND","2":"1"},{"1":"NE","2":"5"},{"1":"NH","2":"3"},{"1":"NJ","2":"3"},{"1":"NM","2":"4"},{"1":"NV","2":"2"},{"1":"NY","2":"16"},{"1":"OH","2":"15"},{"1":"OK","2":"6"},{"1":"OR","2":"29"},{"1":"PA","2":"25"},{"1":"RI","2":"5"},{"1":"SC","2":"4"},{"1":"SD","2":"1"},{"1":"TN","2":"3"},{"1":"TX","2":"28"},{"1":"UT","2":"4"},{"1":"VA","2":"16"},{"1":"VT","2":"10"},{"1":"WA","2":"23"},{"1":"WI","2":"20"},{"1":"WV","2":"1"},{"1":"WY","2":"4"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<pre class="r"><code>Brew_df=as.data.frame(Brew)
+head(Brew_df)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["State"],"name":[1],"type":["chr"],"align":["left"]},{"label":["TotalBreweries"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"AK","2":"7","_rn_":"1"},{"1":"AL","2":"3","_rn_":"2"},{"1":"AR","2":"2","_rn_":"3"},{"1":"AZ","2":"11","_rn_":"4"},{"1":"CA","2":"39","_rn_":"5"},{"1":"CO","2":"47","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<pre class="r"><code>#display in a bar chart
+Brew_df%&gt;%ggplot(aes(x=reorder(as.factor(State),-TotalBreweries),y=TotalBreweries)) +
+  geom_col(fill=&quot;sky blue&quot;,color=&quot;black&quot;)+labs(x=&quot;US 51 States&quot;,y=&quot;Number of Breweries&quot;) +
+  ggtitle(&quot;Number of Breweries in Each State&quot;) +
+  theme(axis.text.x = element_text(angle = 90))</code></pre>
+<p><img src="CaseStudy1_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<pre class="r"><code>#heat map
+breweries2 = read.csv(file.choose())
+lookup = data.frame(abb = state.abb, State = state.name) #make a dataframe of state names and abbreviations
+colnames(breweries2)[4] = &quot;abb&quot; #change column name
+breweries2$abb &lt;- trimws(breweries2$abb, which = c(&quot;both&quot;)) #trim white space
+breweries3 = merge(breweries2, lookup, by =&quot;abb&quot;) #merge datasets
+breweries_mapdata = count(breweries3, State) #count occurance of each state
+colnames(breweries_mapdata)[2] = &quot;Breweries&quot; #change column name from &quot;n&quot; to &quot;breweries&quot;
+breweries_mapdata$region &lt;- tolower(breweries_mapdata$State) #create &quot;region&quot; column
+breweries_mapdata = breweries_mapdata[-1] #remove states column
+states &lt;- map_data(&quot;state&quot;)
+map.df &lt;- merge(states, breweries_mapdata, by = &quot;region&quot;, all.x = T)
+map.df &lt;- map.df[order(map.df$order),] #sort the data
+
+ggplot(map.df, aes(x=long, y=lat, group=group)) +
+  geom_polygon(aes(fill=Breweries)) + geom_path() +
+  scale_fill_gradientn(colours=rev(heat.colors(10)),na.value=&quot;grey90&quot;) +
+  ggtitle(&quot;Breweries by State&quot;) +labs(x=&quot;Longitude&quot;, y=&quot;Latitude&quot;) +
+  coord_map()</code></pre>
+<p><img src="CaseStudy1_files/figure-html/unnamed-chunk-2-2.png" width="672" /></p>
+<p>Here is a barchart and a heat map displaying the number of breweries in each state. Colorado has the maximum number of breweries in United States with a count of 47. Other than Colorado, the states having most breweries are clustered along US border and coasts.The top 5 States with maximum breweries are Colorado, California, Michigan, Oregon, and Texas.The bottom 4 States with minimum breweries are DC, South Dakota, North Dakota, West Virginia, each with only one brewery in entire state.</p>
+<p>Question 2: Merge the datasets</p>
+<pre class="r"><code>Full_data=merge(Beers,Breweries, by=&quot;Brewery_id&quot;)
+head(Full_data)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["Brewery_id"],"name":[1],"type":["int"],"align":["right"]},{"label":["Beer_Name"],"name":[2],"type":["chr"],"align":["left"]},{"label":["Beer_ID"],"name":[3],"type":["int"],"align":["right"]},{"label":["ABV"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["IBU"],"name":[5],"type":["int"],"align":["right"]},{"label":["Style"],"name":[6],"type":["chr"],"align":["left"]},{"label":["Ounces"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["Brewery_Name"],"name":[8],"type":["chr"],"align":["left"]},{"label":["City"],"name":[9],"type":["chr"],"align":["left"]},{"label":["State"],"name":[10],"type":["chr"],"align":["left"]}],"data":[{"1":"1","2":"Get Together","3":"2692","4":"0.045","5":"50","6":"American IPA","7":"16","8":"NorthGate Brewing","9":"Minneapolis","10":"MN","_rn_":"1"},{"1":"1","2":"Maggie's Leap","3":"2691","4":"0.049","5":"26","6":"Milk / Sweet Stout","7":"16","8":"NorthGate Brewing","9":"Minneapolis","10":"MN","_rn_":"2"},{"1":"1","2":"Wall's End","3":"2690","4":"0.048","5":"19","6":"English Brown Ale","7":"16","8":"NorthGate Brewing","9":"Minneapolis","10":"MN","_rn_":"3"},{"1":"1","2":"Pumpion","3":"2689","4":"0.060","5":"38","6":"Pumpkin Ale","7":"16","8":"NorthGate Brewing","9":"Minneapolis","10":"MN","_rn_":"4"},{"1":"1","2":"Stronghold","3":"2688","4":"0.060","5":"25","6":"American Porter","7":"16","8":"NorthGate Brewing","9":"Minneapolis","10":"MN","_rn_":"5"},{"1":"1","2":"Parapet ESB","3":"2687","4":"0.056","5":"47","6":"Extra Special / Strong Bitter (ESB)","7":"16","8":"NorthGate Brewing","9":"Minneapolis","10":"MN","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<pre class="r"><code>tail(Full_data)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["Brewery_id"],"name":[1],"type":["int"],"align":["right"]},{"label":["Beer_Name"],"name":[2],"type":["chr"],"align":["left"]},{"label":["Beer_ID"],"name":[3],"type":["int"],"align":["right"]},{"label":["ABV"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["IBU"],"name":[5],"type":["int"],"align":["right"]},{"label":["Style"],"name":[6],"type":["chr"],"align":["left"]},{"label":["Ounces"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["Brewery_Name"],"name":[8],"type":["chr"],"align":["left"]},{"label":["City"],"name":[9],"type":["chr"],"align":["left"]},{"label":["State"],"name":[10],"type":["chr"],"align":["left"]}],"data":[{"1":"556","2":"Pilsner Ukiah","3":"98","4":"0.055","5":"NA","6":"German Pilsener","7":"12","8":"Ukiah Brewing Company","9":"Ukiah","10":"CA","_rn_":"2405"},{"1":"557","2":"Heinnieweisse Weissebier","3":"52","4":"0.049","5":"NA","6":"Hefeweizen","7":"12","8":"Butternuts Beer and Ale","9":"Garrattsville","10":"NY","_rn_":"2406"},{"1":"557","2":"Snapperhead IPA","3":"51","4":"0.068","5":"NA","6":"American IPA","7":"12","8":"Butternuts Beer and Ale","9":"Garrattsville","10":"NY","_rn_":"2407"},{"1":"557","2":"Moo Thunder Stout","3":"50","4":"0.049","5":"NA","6":"Milk / Sweet Stout","7":"12","8":"Butternuts Beer and Ale","9":"Garrattsville","10":"NY","_rn_":"2408"},{"1":"557","2":"Porkslap Pale Ale","3":"49","4":"0.043","5":"NA","6":"American Pale Ale (APA)","7":"12","8":"Butternuts Beer and Ale","9":"Garrattsville","10":"NY","_rn_":"2409"},{"1":"558","2":"Urban Wilderness Pale Ale","3":"30","4":"0.049","5":"NA","6":"English Pale Ale","7":"12","8":"Sleeping Lady Brewing Company","9":"Anchorage","10":"AK","_rn_":"2410"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<pre class="r"><code>dim(Full_data)</code></pre>
+<pre><code>## [1] 2410   10</code></pre>
+<p>Types of craft beers</p>
+<pre class="r"><code>Full_data[&quot;Class&quot;] = ifelse(str_detect(Full_data$Style,&quot;IPA&quot;),&quot;IPA&quot;, 
+                      ifelse(str_detect(Full_data$Style,&quot;Ale&quot;),&quot;Ale&quot;, 
+                      ifelse(str_detect(Full_data$Style,&quot;Lager&quot;),&quot;Lager&quot;, 
+                      ifelse(str_detect(Full_data$Style,&quot;Stout&quot;),&quot;Stout&quot;, 
+                      ifelse(str_detect(Full_data$Style,&quot;Pilsner&quot;),&quot;Pilsner&quot;, 
+                      ifelse(str_detect(Full_data$Style,&quot;Pilsener&quot;),&quot;Pilsner&quot;, 
+                      ifelse(str_detect(Full_data$Style,&quot;Porter&quot;),&quot;Porter&quot;, 
+                      ifelse(str_detect(Full_data$Style,&quot;APA&quot;),&quot;APA&quot;, 
+                      ifelse(str_detect(Full_data$Style,&quot;Cider&quot;),&quot;Cider&quot;, 
+                      ifelse(str_detect(Full_data$Style,&quot;Witbier&quot;),&quot;Witbier&quot;,
+                      ifelse(str_detect(Full_data$Style,&quot;Kölsch&quot;),&quot;Kölsch&quot;, 
+                      ifelse(str_detect(Full_data$Style,&quot;Fruit&quot;),&quot;Fruit&quot;, 
+                      ifelse(str_detect(Full_data$Style,&quot;Hefeweizen&quot;),&quot;Hefeweizen&quot;, 
+                      ifelse(str_detect(Full_data$Style,&quot;Oktoberfest&quot;),&quot;Oktoberfest&quot;, 
+                      ifelse(str_detect(Full_data$Style,&quot;Bitter&quot;),&quot;Bitter&quot;,
+                             &quot;Other&quot;)))))))))))))))
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+Full_data%&gt;%ggplot(aes(x = Class, fill=Class))+geom_bar()+
+  ggtitle(&quot;Distribution of Beer Classes&quot;)+coord_flip()+xlab(&quot;Class of carft beers&quot;)+ylab(&quot;Count&quot;)</code></pre>
+<p><img src="CaseStudy1_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<pre class="r"><code>total_beer=length(Full_data$Class)
+total_beer</code></pre>
+<pre><code>## [1] 2410</code></pre>
+<pre class="r"><code>total_IPA=sum(str_detect(Full_data$Class, &quot;IPA&quot;))
+total_IPA</code></pre>
+<pre><code>## [1] 571</code></pre>
+<pre class="r"><code>total_Ale=sum(str_detect(Full_data$Class, &quot;Ale&quot;))
+total_Ale</code></pre>
+<pre><code>## [1] 963</code></pre>
+<pre class="r"><code>total_IPA_Ale=((total_Ale+total_IPA)/total_beer)*100
+total_IPA_Ale</code></pre>
+<pre><code>## [1] 63.65145</code></pre>
+<p>There are 100 different style of craft beers brewed in the United States. Classes of Beer have style variants, i.e., Ales include English Pale, Irish Red, etc. When grouped into classes, IPA’s And Ales account for 64% of all craft beers.</p>
+<p>Question 3: Address the missing values in each column</p>
+<pre class="r"><code>#find out how many missing values there are in each column
+d1=sum(is.na(Full_data$ABV))
+d1#ABV has 62 NA values</code></pre>
+<pre><code>## [1] 62</code></pre>
+<pre class="r"><code>d2=sum(is.na(Full_data$IBU))
+d2#IBU has 1005 NA values</code></pre>
+<pre><code>## [1] 1005</code></pre>
+<pre class="r"><code>d3=sum(is.na(Full_data$Beer_Name))
+d3</code></pre>
+<pre><code>## [1] 0</code></pre>
+<pre class="r"><code>d4=sum(is.na(Full_data$Style))
+d4</code></pre>
+<pre><code>## [1] 0</code></pre>
+<pre class="r"><code>d5=sum(is.na(Full_data$Ounces))
+d5</code></pre>
+<pre><code>## [1] 0</code></pre>
+<pre class="r"><code>d6=sum(is.na(Full_data$Brewery_Name))
+d6</code></pre>
+<pre><code>## [1] 0</code></pre>
+<pre class="r"><code>d7=sum(is.na(Full_data$City))
+d7</code></pre>
+<pre><code>## [1] 0</code></pre>
+<pre class="r"><code>d8=sum(is.na(Full_data$State))
+d8</code></pre>
+<pre><code>## [1] 0</code></pre>
+<pre class="r"><code>#visualize missing values
+missing_values=data.frame(column=c(&quot;ABV&quot;,&quot;IBU&quot;,&quot;Beer_Name&quot;,&quot;Style&quot;,&quot;Ounces&quot;,&quot;Brewery_Name&quot;,&quot;City&quot;,&quot;State&quot; ), count=c(d1,d2,d3,d4,d5,d6,d7,d8))
+missing_values</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["column"],"name":[1],"type":["chr"],"align":["left"]},{"label":["count"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"ABV","2":"62"},{"1":"IBU","2":"1005"},{"1":"Beer_Name","2":"0"},{"1":"Style","2":"0"},{"1":"Ounces","2":"0"},{"1":"Brewery_Name","2":"0"},{"1":"City","2":"0"},{"1":"State","2":"0"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<pre class="r"><code>ggplot(missing_values, aes(x=column, y=count)) +
+  geom_segment( aes(x=column, xend=column, y=0, yend=count)) +
+  geom_point( size=3, color=&quot;red&quot;, fill=alpha(&quot;orange&quot;, 0.3), alpha=0.7, shape=21, stroke=2)+
+  labs(x=&quot;Columns in Beers And Breweries data&quot;, y=&quot;Count of Missing Values&quot;,title=&quot;Addressing Missing Values in Each Column for Beer and Breweries Data&quot;)+
+theme(axis.text.x = element_text(angle = 90))</code></pre>
+<p><img src="CaseStudy1_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<pre class="r"><code>#Boxplot of IBU  with NA values
+#NA_df_IBU=ggplot(Full_data,aes(y=reorder(Class,-IBU),x=IBU)) +
+#  geom_boxplot(fill=&quot;pink&quot;,color=&quot;black&quot;) +
+#  labs(y=&quot;Beer Class&quot;,x=&quot;International Bitterness Unit&quot;) +
+#  ggtitle(&quot;International Bitterness Unit by class&quot;) +
+#  theme(axis.text.x = element_text(angle = 90))
+
+#NA_df_IBU
+
+#Boxplot of IBV with NA values
+#NA_df_ABV=ggplot(Full_data,aes(y=reorder(Class,-ABV),x=ABV)) +
+#  geom_boxplot(fill=&quot;dark green&quot;,color=&quot;black&quot;) +
+#  labs(y=&quot;Beer Class&quot;,x=&quot;Alcohol by Volume&quot;) +
+#  ggtitle(&quot;Alcohol by Volume by class&quot;) +
+#  theme(axis.text.x = element_text(angle = 90))
+
+#NA_df_ABV
+
+
+#make a new column where null ABV values now have ABV mean
+#imp = imputed
+Full_data$ABV.imp.mean =ifelse(is.na(Full_data$ABV), mean(Full_data$ABV, na.rm=TRUE), Full_data$ABV)
+head(Full_data$ABV.imp.mean)</code></pre>
+<pre><code>## [1] 0.045 0.049 0.048 0.060 0.060 0.056</code></pre>
+<pre class="r"><code>sum(is.na(Full_data$ABV.imp.mean)) #no more NAs</code></pre>
+<pre><code>## [1] 0</code></pre>
+<pre class="r"><code>#make a new column where null IBU values now have IBU mean
+Full_data$IBU.imp.mean = ifelse(is.na(Full_data$IBU), mean(Full_data$IBU, na.rm=TRUE), Full_data$IBU)
+head(Full_data$IBU.imp.mean)</code></pre>
+<pre><code>## [1] 50 26 19 38 25 47</code></pre>
+<pre class="r"><code>sum(is.na(Full_data$IBU.imp.mean)) #no more NAs</code></pre>
+<pre><code>## [1] 0</code></pre>
+<p>We found 62 null values in the ABV column (2.6%) and 1005 in the IBU column (42%). No IBU rating is available for South Dakota. Thinking the missing values would be close to the average, we replaced them with the averages of the present values.</p>
+<p>Question 4: Compute and plot median alcohol content and international bitterness units for each state.</p>
+<pre class="r"><code>#compute medians
+Median_df_imp=Full_data%&gt;%group_by(State)%&gt;%summarise(median_ABV_imp=median(ABV.imp.mean), median_IBU_imp=median(IBU.imp.mean))</code></pre>
+<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
+<pre class="r"><code>Median_df_imp=as.data.frame(Median_df_imp)
+head(Median_df_imp)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["State"],"name":[1],"type":["chr"],"align":["left"]},{"label":["median_ABV_imp"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["median_IBU_imp"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"AK","2":"0.05600000","3":"42.71317","_rn_":"1"},{"1":"AL","2":"0.06000000","3":"42.85658","_rn_":"2"},{"1":"AR","2":"0.05200000","3":"42.71317","_rn_":"3"},{"1":"AZ","2":"0.05800000","3":"42.71317","_rn_":"4"},{"1":"CA","2":"0.05800000","3":"42.71317","_rn_":"5"},{"1":"CO","2":"0.05977342","3":"42.71317","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<pre class="r"><code>#plot medians for ABV without na values
+Median_df_ABV=ggplot(Median_df_imp,aes(x=reorder(State,-median_ABV_imp),y=median_ABV_imp)) +
+  geom_col(fill=&quot;sky blue&quot;,color=&quot;black&quot;) +
+  labs(x=&quot;US 51 States&quot;,y=&quot;Median Alcohol Content by Volume&quot;) +
+  ggtitle(&quot;Median Alcohol Content by Volume in Each State&quot;) +
+  theme(axis.text.x = element_text(angle = 90))
+
+Median_df_ABV</code></pre>
+<p><img src="CaseStudy1_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<pre class="r"><code>#plot medians for IBU without na values
+Median_df_IBU=ggplot(Median_df_imp,aes(x=reorder(State,-median_IBU_imp),y=median_IBU_imp)) +
+  geom_col(fill=&quot;pink&quot;,color=&quot;black&quot;) +
+  labs(x=&quot;US 51 States&quot;,y=&quot;Median International Bitterness Units&quot;) +
+  ggtitle(&quot;International Bitterness Units in Each State&quot;) +
+  theme(axis.text.x = element_text(angle = 90))
+
+Median_df_IBU</code></pre>
+<p><img src="CaseStudy1_files/figure-html/unnamed-chunk-6-2.png" width="672" /></p>
+<pre class="r"><code>#table
+Median_df_imp</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["State"],"name":[1],"type":["chr"],"align":["left"]},{"label":["median_ABV_imp"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["median_IBU_imp"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"AK","2":"0.05600000","3":"42.71317"},{"1":"AL","2":"0.06000000","3":"42.85658"},{"1":"AR","2":"0.05200000","3":"42.71317"},{"1":"AZ","2":"0.05800000","3":"42.71317"},{"1":"CA","2":"0.05800000","3":"42.71317"},{"1":"CO","2":"0.05977342","3":"42.71317"},{"1":"CT","2":"0.06000000","3":"42.71317"},{"1":"DC","2":"0.06250000","3":"42.71317"},{"1":"DE","2":"0.05738671","3":"47.35658"},{"1":"FL","2":"0.05850000","3":"42.71317"},{"1":"GA","2":"0.05500000","3":"42.71317"},{"1":"HI","2":"0.05400000","3":"42.00000"},{"1":"IA","2":"0.05550000","3":"29.50000"},{"1":"ID","2":"0.05650000","3":"42.71317"},{"1":"IL","2":"0.05800000","3":"42.71317"},{"1":"IN","2":"0.05977342","3":"42.71317"},{"1":"KS","2":"0.05000000","3":"22.00000"},{"1":"KY","2":"0.06000000","3":"42.71317"},{"1":"LA","2":"0.05200000","3":"42.71317"},{"1":"MA","2":"0.05400000","3":"42.71317"},{"1":"MD","2":"0.05800000","3":"42.71317"},{"1":"ME","2":"0.05100000","3":"42.71317"},{"1":"MI","2":"0.06000000","3":"42.71317"},{"1":"MN","2":"0.05600000","3":"42.71317"},{"1":"MO","2":"0.05500000","3":"32.50000"},{"1":"MS","2":"0.05800000","3":"45.00000"},{"1":"MT","2":"0.05500000","3":"42.71317"},{"1":"NC","2":"0.05800000","3":"42.71317"},{"1":"ND","2":"0.05000000","3":"32.00000"},{"1":"NE","2":"0.05600000","3":"42.71317"},{"1":"NH","2":"0.05500000","3":"42.71317"},{"1":"NJ","2":"0.04600000","3":"34.50000"},{"1":"NM","2":"0.06100000","3":"42.71317"},{"1":"NV","2":"0.05977342","3":"42.71317"},{"1":"NY","2":"0.05500000","3":"42.71317"},{"1":"OH","2":"0.05800000","3":"42.71317"},{"1":"OK","2":"0.06000000","3":"42.71317"},{"1":"OR","2":"0.05600000","3":"42.71317"},{"1":"PA","2":"0.05800000","3":"42.71317"},{"1":"RI","2":"0.05500000","3":"32.00000"},{"1":"SC","2":"0.05500000","3":"42.71317"},{"1":"SD","2":"0.06000000","3":"42.71317"},{"1":"TN","2":"0.05700000","3":"39.85658"},{"1":"TX","2":"0.05600000","3":"42.71317"},{"1":"UT","2":"0.04000000","3":"42.71317"},{"1":"VA","2":"0.05650000","3":"42.71317"},{"1":"VT","2":"0.05500000","3":"42.71317"},{"1":"WA","2":"0.05550000","3":"42.71317"},{"1":"WI","2":"0.05200000","3":"42.71317"},{"1":"WV","2":"0.06200000","3":"57.50000"},{"1":"WY","2":"0.05000000","3":"32.00000"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>Here we see the median alcohol contents and international bitterness units for each state (including Washington, D.C.). Median alcohol content by volume doesn’t appear to vary much by state, with most states having a median value between 0.05 and 0.06. The top 5 states with maximum median ABV are DC, West Virginia, New Mexico, Alabama, and Connecticut. The bottom 5 states with minimum median ABV are Kansas, North Dakota, Wyoming, New Jersey and Utah. For most states, the median IBU rating is in the low 40’s. The top 5 states with maximum median IBU are West Virginia, Delaware, Mississippi, Alabama, and Arkansas. The bottom 5 states with minimum median IBU are North Dakota, Rhode Island, Wyoming, Iowa, Kansas.</p>
+<p>Question 5: Which state has the maximum alcoholic beer, and which has the most bitter beer?</p>
+<pre class="r"><code>max.abv =Full_data %&gt;% filter(ABV==max(Full_data$ABV,na.rm=TRUE)) %&gt;% select(Beer_Name,ABV,Class,Style,State,Brewery_Name)
+max.abv</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Beer_Name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["ABV"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["Class"],"name":[3],"type":["chr"],"align":["left"]},{"label":["Style"],"name":[4],"type":["chr"],"align":["left"]},{"label":["State"],"name":[5],"type":["chr"],"align":["left"]},{"label":["Brewery_Name"],"name":[6],"type":["chr"],"align":["left"]}],"data":[{"1":"Lee Hill Series Vol. 5 - Belgian Style Quadrupel Ale","2":"0.128","3":"Other","4":"Quadrupel (Quad)","5":"CO","6":"Upslope Brewing Company"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<pre class="r"><code>#Answer Colorado, Lee Hill Series Vol.5, ABV = 0.128, Upslope Brewing Company
+max.ibu = Full_data %&gt;% filter(IBU==max(Full_data$IBU,na.rm=TRUE)) %&gt;% select(Beer_Name,IBU,Class,Style,State,Brewery_Name)
+max.ibu</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Beer_Name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["IBU"],"name":[2],"type":["int"],"align":["right"]},{"label":["Class"],"name":[3],"type":["chr"],"align":["left"]},{"label":["Style"],"name":[4],"type":["chr"],"align":["left"]},{"label":["State"],"name":[5],"type":["chr"],"align":["left"]},{"label":["Brewery_Name"],"name":[6],"type":["chr"],"align":["left"]}],"data":[{"1":"Bitter Bitch Imperial IPA","2":"138","3":"IPA","4":"American Double / Imperial IPA","5":"OR","6":"Astoria Brewing Company"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<pre class="r"><code>#Answer Oregon, Bitter Bitch Imperial, IBU = 138</code></pre>
+<p>Upslope Brewing Company in Colorado has the most alcoholic beer with name “Lee Hill Series Vol. 5 - Belgian Style Quadrupel Ale,” of 19.2 Oz, with ABV=12.8% and no IBU score given. Astoria Brewing Company in Oregon has the most bitter beer with name “Bitter Bitch Imperial IPA,” of 12 Oz, with IBU=138 and ABV=8.2%. The IBU rating of this beer is nearly four times the mean IBU rating.</p>
+<p>Question 6: Comment on the summary statistics</p>
+<pre class="r"><code>#with NAs
+summary_ABV=summary(Full_data$ABV)#for ABV
+summary_ABV</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
+## 0.00100 0.05000 0.05600 0.05977 0.06700 0.12800      62</code></pre>
+<pre class="r"><code>ABV_histogram = Full_data %&gt;% ggplot(aes(x = ABV, fill=Class)) + 
+  geom_histogram( color = &quot;black&quot;) + 
+  ggtitle(&quot;Distribution of ABV with NA values&quot;)+labs(y=&quot;Count&quot;, x=&quot;Alcohol By Volume&quot;)
+ABV_histogram</code></pre>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<pre><code>## Warning: Removed 62 rows containing non-finite values (stat_bin).</code></pre>
+<p><img src="CaseStudy1_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<pre class="r"><code>#without NAs
+summary_imp_ABV=summary(Full_data$ABV.imp.mean)#for ABV
+summary_imp_ABV</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+## 0.00100 0.05000 0.05700 0.05977 0.06700 0.12800</code></pre>
+<pre class="r"><code>ABV_imp_histogram = Full_data %&gt;% ggplot(aes(x = ABV.imp.mean, fill=Class)) + 
+  geom_histogram(color=&quot;black&quot;) + 
+  ggtitle(&quot;Distribution of ABV with Imputed Mean Values instead of NA&quot;)+
+  labs(y=&quot;Count&quot;, x=&quot;Alcohol By Volume&quot;)
+ABV_imp_histogram</code></pre>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<p><img src="CaseStudy1_files/figure-html/unnamed-chunk-8-2.png" width="672" /></p>
+<p>Our visual evidence suggests that the distribution of alcohol content by volume is slightly right skewed, but mostly normal. With our decision to replace the null values with the mean, only the median is affected of the summary statistics, and then only slightly. The skewness appears to come largely from IPAs, indicating that IPAs are more alcoholic than other beers.</p>
+<p>Question 7: Is there a relationship between bitterness and alcohol content?</p>
+<pre class="r"><code>#with NAs
+IBU_ABV=ggplot(Full_data,aes(x=ABV, y=IBU)) +
+  geom_point() +
+  geom_smooth(method=&quot;lm&quot;) +
+  ggtitle(&quot;Relationship between ABV and IBU with NA Values&quot;)+
+  labs(x=&quot;Alcohol By Volume&quot;,y=&quot;International Bitterness Units&quot;)
+IBU_ABV</code></pre>
+<pre><code>## `geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>## Warning: Removed 1005 rows containing non-finite values (stat_smooth).</code></pre>
+<pre><code>## Warning: Removed 1005 rows containing missing values (geom_point).</code></pre>
+<p><img src="CaseStudy1_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<pre class="r"><code>lm_full_data=lm(IBU~ABV, Full_data)
+lm_full_data</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = IBU ~ ABV, data = Full_data)
+## 
+## Coefficients:
+## (Intercept)          ABV  
+##       -34.1       1282.0</code></pre>
+<pre class="r"><code>summary(lm_full_data)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = IBU ~ ABV, data = Full_data)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -78.849 -11.977  -0.721  13.997  93.458 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  -34.099      2.326  -14.66   &lt;2e-16 ***
+## ABV         1282.037     37.860   33.86   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 19.26 on 1403 degrees of freedom
+##   (1005 observations deleted due to missingness)
+## Multiple R-squared:  0.4497, Adjusted R-squared:  0.4493 
+## F-statistic:  1147 on 1 and 1403 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>#without NAs
+imp_IBU_ABV=ggplot(Full_data,aes(x=ABV.imp.mean, y=IBU.imp.mean)) +
+  geom_point() +
+  geom_smooth(method=&quot;lm&quot;) +
+  ggtitle(&quot;Relationship between ABV and IBU with Imputed Mean Values&quot;)+
+  labs(x=&quot;Alcohol By Volume&quot;,y=&quot;International Bitterness Units&quot;)
+imp_IBU_ABV</code></pre>
+<pre><code>## `geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<p><img src="CaseStudy1_files/figure-html/unnamed-chunk-9-2.png" width="672" /></p>
+<pre class="r"><code>lm_full_data_imp=lm(IBU.imp.mean~ABV.imp.mean, Full_data)
+lm_full_data_imp</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = IBU.imp.mean ~ ABV.imp.mean, data = Full_data)
+## 
+## Coefficients:
+##  (Intercept)  ABV.imp.mean  
+##       -3.363       770.851</code></pre>
+<pre class="r"><code>summary(lm_full_data_imp)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = IBU.imp.mean ~ ABV.imp.mean, data = Full_data)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -62.555 -12.492   0.000   9.498  92.883 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)    -3.363      1.580  -2.128   0.0334 *  
+## ABV.imp.mean  770.851     25.803  29.875   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 16.93 on 2408 degrees of freedom
+## Multiple R-squared:  0.2704, Adjusted R-squared:  0.2701 
+## F-statistic: 892.5 on 1 and 2408 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>There appears to be a positive relationship between alcohol content by volume and international bitterness units.This is true regardless of whether we use the imputed null values, though less of the IBU variability is explained by the alcohol content with the imputed values (27% with imputed values vs. 45% without). Perhaps this relationship is positive because breweries wish to balance the sugar content (which makes beer more alcoholic with the fermentation process) with the hops content (which can make beer bitter). Or perhaps it is that many people find alcohol (ethanol) to be bitter.</p>
+<p>Question 8: Investigate the difference between IPAs and other Ales using KNN</p>
+<pre class="r"><code>Full_data[&quot;Class2&quot;] = ifelse(str_detect(Full_data$Style,&quot;IPA&quot;),&quot;IPA&quot;, 
+                      ifelse(str_detect(Full_data$Style,&quot;Ale&quot;),&quot;Ale&quot;,
+                        ifelse(str_detect(Full_data$Style, &quot;APA&quot;), &quot;Ale&quot;,
+                        NA
+                       )))
+
+just_ales = na.omit(Full_data, cols = c(&quot;Class2&quot;))
+#head(just_ales)
+
+#knn classifier
+set.seed(877)
+iterations = 100
+numks = 60
+splitPerc = .70
+masterAcc = matrix(nrow = iterations, ncol = numks)
+masterSens = matrix(nrow = iterations, ncol = numks)
+masterSpec = matrix(nrow = iterations, ncol = numks)
+for(j in 1:iterations)
+{
+  accs = data.frame(accuracy = numeric(60), k = numeric(60))
+  trainIndices = sample(1:dim(just_ales)[1],round(splitPerc * dim(just_ales[1])))
+  train = just_ales[trainIndices,]
+  test = just_ales[-trainIndices,]
+  for(i in 1:numks)
+  {
+    classifications = knn(train[,c(&quot;IBU.imp.mean&quot;,&quot;ABV.imp.mean&quot;)],test[,c(&quot;IBU.imp.mean&quot;,&quot;ABV.imp.mean&quot;)],train$Class2, prob = TRUE, k = i)
+    table(classifications,test$Class2)
+    CM = confusionMatrix(table(classifications,test$Class))
+    masterAcc[j,i] = CM$overall[1]
+    masterSens[j,i] = mean(CM$byClass[1])
+    masterSpec[j,i] = mean(CM$byClass[2]) 
+  }
+  
+}
+
+
+
+MeanAcc = colMeans(masterAcc)
+MeanSens = colMeans(masterSens)
+MeanSpec = colMeans(masterSpec)
+
+
+#which is the best k
+plot(seq(1,numks,1),MeanAcc, type = &quot;l&quot;, main = &quot;Accuracy&quot;, ylab = &quot;Mean Accuracy&quot;, xlab = &quot;Number of Neighbors&quot;)</code></pre>
+<p><img src="CaseStudy1_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<pre class="r"><code>which.max(MeanAcc)</code></pre>
+<pre><code>## [1] 5</code></pre>
+<pre class="r"><code>max(MeanAcc) #Accuracy with k=5</code></pre>
+<pre><code>## [1] 0.8585866</code></pre>
+<pre class="r"><code>MeanSens[5] #Sensitivity with k=5</code></pre>
+<pre><code>## [1] 0.8894598</code></pre>
+<pre class="r"><code>MeanSpec[5] #Specificity with k=5</code></pre>
+<pre><code>## [1] 0.8155353</code></pre>
+<pre class="r"><code>Full_data %&gt;% filter(Class == &quot;IPA&quot; | Class == &quot;Ale&quot;) %&gt;% ggplot(mapping=aes(y=IBU, x=ABV,color=Class)) + geom_point()+ labs(y=&quot;International Bitterness Units&quot;,x=&quot;Alcohol Content by Volume&quot;,title=&quot;Correlation between ABV and IBU&quot;)</code></pre>
+<pre><code>## Warning: Removed 590 rows containing missing values (geom_point).</code></pre>
+<p><img src="CaseStudy1_files/figure-html/unnamed-chunk-10-2.png" width="672" /></p>
+<p>We trained our KNN model with 100 iterations to find the number of neighbors with the highest accuracy. We found that to be k=5. Given ABV and IBU, our KNN model has over an 85% accuracy rate–that is the number of beers correctly classified as either IPA or other Ale. The model has a sensitivity of over 88%–that is of the Ales, over 88% were identified correctly. Finally, the model has a specificity of over 81%–that is, of the IPAs, over 81% were identified correctly.</p>
+<p>Question 9: Provide extra insights</p>
+<p>Insight 1: “ABV and IBU relationship for IPA and Ale”</p>
+<pre class="r"><code>Full_data %&gt;% filter(Class == &quot;IPA&quot; | Class == &quot;Ale&quot;) %&gt;% ggplot(mapping=aes(y=IBU, x=ABV,color=Class)) + geom_point()+ geom_smooth(method=&quot;lm&quot;,se=FALSE,size=1)+ labs(title=&quot;Correlation between ABV and IBU&quot;)</code></pre>
+<pre><code>## `geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>## Warning: Removed 590 rows containing non-finite values (stat_smooth).</code></pre>
+<pre><code>## Warning: Removed 590 rows containing missing values (geom_point).</code></pre>
+<p><img src="CaseStudy1_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<pre class="r"><code>ipa=Full_data %&gt;% filter(Class == &quot;IPA&quot;)
+#ipa
+fit_ipa=lm(ABV~IBU,data=ipa)
+summary(fit_ipa)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = ABV ~ IBU, data = ipa)
+## 
+## Residuals:
+##       Min        1Q    Median        3Q       Max 
+## -0.035112 -0.005484 -0.000441  0.005594  0.027253 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 0.0406499  0.0018115   22.44   &lt;2e-16 ***
+## IBU         0.0003960  0.0000243   16.30   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.009391 on 390 degrees of freedom
+##   (179 observations deleted due to missingness)
+## Multiple R-squared:  0.4051, Adjusted R-squared:  0.4036 
+## F-statistic: 265.6 on 1 and 390 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>ale=Full_data %&gt;% filter(Class == &quot;Ale&quot;)
+#ale
+fit_ale=lm(ABV~IBU,data=ale)
+summary(fit_ale)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = ABV ~ IBU, data = ale)
+## 
+## Residuals:
+##       Min        1Q    Median        3Q       Max 
+## -0.025144 -0.005762 -0.001514  0.002734  0.043034 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 0.0462786  0.0008949   51.71   &lt;2e-16 ***
+## IBU         0.0002993  0.0000231   12.96   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.009745 on 550 degrees of freedom
+##   (411 observations deleted due to missingness)
+## Multiple R-squared:  0.234,  Adjusted R-squared:  0.2326 
+## F-statistic:   168 on 1 and 550 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>ale_ounce=Full_data %&gt;%group_by(Class,Ounces)%&gt;%filter(Class == &quot;Ale&quot;)
+summary(ale_ounce)</code></pre>
+<pre><code>##    Brewery_id     Beer_Name            Beer_ID            ABV         
+##  Min.   :  1.0   Length:963         Min.   :   1.0   Min.   :0.03500  
+##  1st Qu.: 93.0   Class :character   1st Qu.: 756.5   1st Qu.:0.05000  
+##  Median :205.0   Mode  :character   Median :1350.0   Median :0.05500  
+##  Mean   :235.9                      Mean   :1378.0   Mean   :0.05681  
+##  3rd Qu.:369.0                      3rd Qu.:2053.5   3rd Qu.:0.06000  
+##  Max.   :558.0                      Max.   :2690.0   Max.   :0.09900  
+##                                                      NA&#39;s   :31       
+##       IBU            Style               Ounces      Brewery_Name      
+##  Min.   :  4.00   Length:963         Min.   :12.00   Length:963        
+##  1st Qu.: 20.00   Class :character   1st Qu.:12.00   Class :character  
+##  Median : 30.00   Mode  :character   Median :12.00   Mode  :character  
+##  Mean   : 34.33                      Mean   :13.47                     
+##  3rd Qu.: 44.25                      3rd Qu.:16.00                     
+##  Max.   :115.00                      Max.   :32.00                     
+##  NA&#39;s   :411                                                           
+##      City              State              Class            ABV.imp.mean    
+##  Length:963         Length:963         Length:963         Min.   :0.03500  
+##  Class :character   Class :character   Class :character   1st Qu.:0.05000  
+##  Mode  :character   Mode  :character   Mode  :character   Median :0.05500  
+##                                                           Mean   :0.05691  
+##                                                           3rd Qu.:0.06000  
+##                                                           Max.   :0.09900  
+##                                                                            
+##   IBU.imp.mean       Class2         
+##  Min.   :  4.00   Length:963        
+##  1st Qu.: 27.50   Class :character  
+##  Median : 42.71   Mode  :character  
+##  Mean   : 37.91                     
+##  3rd Qu.: 42.71                     
+##  Max.   :115.00                     
+## </code></pre>
+<pre class="r"><code>ipa_ounce=Full_data %&gt;%group_by(Class,Ounces)%&gt;%filter(Class == &quot;IPA&quot;)
+summary(ipa_ounce)</code></pre>
+<pre><code>##    Brewery_id     Beer_Name            Beer_ID          ABV         
+##  Min.   :  1.0   Length:571         Min.   :   4   Min.   :0.02700  
+##  1st Qu.: 87.5   Class :character   1st Qu.: 868   1st Qu.:0.06200  
+##  Median :206.0   Mode  :character   Median :1603   Median :0.06800  
+##  Mean   :224.8                      Mean   :1494   Mean   :0.06879  
+##  3rd Qu.:344.5                      3rd Qu.:2089   3rd Qu.:0.07500  
+##  Max.   :557.0                      Max.   :2692   Max.   :0.09900  
+##                                                    NA&#39;s   :11       
+##       IBU            Style               Ounces      Brewery_Name      
+##  Min.   : 30.00   Length:571         Min.   :12.00   Length:571        
+##  1st Qu.: 60.00   Class :character   1st Qu.:12.00   Class :character  
+##  Median : 70.00   Mode  :character   Median :12.00   Mode  :character  
+##  Mean   : 71.95                      Mean   :13.75                     
+##  3rd Qu.: 85.00                      3rd Qu.:16.00                     
+##  Max.   :138.00                      Max.   :32.00                     
+##  NA&#39;s   :179                                                           
+##      City              State              Class            ABV.imp.mean    
+##  Length:571         Length:571         Length:571         Min.   :0.02700  
+##  Class :character   Class :character   Class :character   1st Qu.:0.06200  
+##  Mode  :character   Mode  :character   Mode  :character   Median :0.06800  
+##                                                           Mean   :0.06862  
+##                                                           3rd Qu.:0.07500  
+##                                                           Max.   :0.09900  
+##                                                                            
+##   IBU.imp.mean       Class2         
+##  Min.   : 30.00   Length:571        
+##  1st Qu.: 42.71   Class :character  
+##  Median : 61.00   Mode  :character  
+##  Mean   : 62.78                     
+##  3rd Qu.: 75.00                     
+##  Max.   :138.00                     
+## </code></pre>
+<p>For IPAs, the relationship between ABV and IBU is once again positive, with an estimated 41% of variation in IBU attributed to ABV. For other ales, a positive relationship, with an estimated 24% of variation in IBU attributed to ABV.</p>
+<p>Insight 2: Alcohol consumption per capita per brewery</p>
+<pre class="r"><code>alcohol_cons = read.csv(file.choose()) #data collected from https://vinepair.com/articles/map-states-drink-alcohol-america-2020/
+lookup = data.frame(abb = state.abb, State = state.name) #make a dataframe of state names and abbreviations
+alcohol_cons$State &lt;- trimws(alcohol_cons$State, which = c(&quot;both&quot;)) #trim white space
+alcohol_cons2 = merge(alcohol_cons, lookup, by =&quot;State&quot;) #merge datasets
+colnames(alcohol_cons2)[3] = &quot;Gallons&quot; #change column name
+alcohol_cons2$Gallons = str_replace(alcohol_cons2$Gallons, &quot;M&quot;, &quot;&quot;) #remove M
+alcohol_cons2$Gallons = as.numeric(alcohol_cons2$Gallons) #make numeric
+alcohol_cons2$region &lt;- tolower(alcohol_cons2$State) #create &quot;region&quot; column
+alcohol_cons2 = alcohol_cons2[-1] #remove states column
+nd = c(&quot;47&quot;, 2, &quot;ND&quot;, &quot;north dakota&quot;) #add north dakota back in
+names(nd) = c(&quot;Rank&quot;, &quot;Gallons&quot;, &quot;abb&quot;, &quot;region&quot;)
+alcohol_cons2 = rbind(alcohol_cons2, nd)
+alcohol_cons2 = alcohol_cons2[-1]
+alcohol_cons2$Gallons = as.numeric(alcohol_cons2$Gallons) #make numeric again
+#states &lt;- map_data(&quot;state&quot;)
+#map.df &lt;- merge(states, alcohol_cons2, by = &quot;region&quot;, all.x = T)
+#map.df &lt;- map.df[order(map.df$order),] #sort the data
+#ggplot(map.df, aes(x=long, y=lat, group=group)) +
+#  geom_polygon(aes(fill=Gallons)) + geom_path() +
+#  scale_fill_gradientn(colours=rev(hcl.colors(10, palette = &quot;Emrld&quot;)),na.value=&quot;grey90&quot;) +
+#  ggtitle(&quot;Total Alcohol Consumption by State&quot;) +labs(x=&quot;Longitude&quot;, y=&quot;Latitude&quot;)
+#  coord_map()
+
+
+Brew_df$State &lt;- trimws(Brew_df$State, which = c(&quot;both&quot;))
+
+#alcohol consumption per brewery
+ac_pc_pb = merge(Brew_df, alcohol_cons2, by.x = &quot;State&quot;, by.y = &quot;abb&quot;)
+
+ac_pc_pb2 = ac_pc_pb %&gt;% summarise(State = State, ac_pc_pb = Gallons/n())
+
+ac_pc_pb2</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["State"],"name":[1],"type":["chr"],"align":["left"]},{"label":["ac_pc_pb"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"AK","2":"0.034"},{"1":"AL","2":"0.160"},{"1":"AR","2":"0.088"},{"1":"AZ","2":"0.266"},{"1":"CA","2":"1.624"},{"1":"CO","2":"0.272"},{"1":"CT","2":"0.146"},{"1":"DE","2":"0.058"},{"1":"FL","2":"0.940"},{"1":"GA","2":"0.328"},{"1":"HI","2":"0.062"},{"1":"IA","2":"0.124"},{"1":"ID","2":"0.082"},{"1":"IL","2":"0.504"},{"1":"IN","2":"0.236"},{"1":"KS","2":"0.090"},{"1":"KY","2":"0.144"},{"1":"LA","2":"0.194"},{"1":"MA","2":"0.300"},{"1":"MD","2":"0.208"},{"1":"ME","2":"0.066"},{"1":"MI","2":"0.394"},{"1":"MN","2":"0.256"},{"1":"MO","2":"0.254"},{"1":"MS","2":"0.106"},{"1":"MT","2":"0.054"},{"1":"NC","2":"0.374"},{"1":"ND","2":"0.040"},{"1":"NE","2":"0.068"},{"1":"NH","2":"0.108"},{"1":"NJ","2":"0.350"},{"1":"NM","2":"0.078"},{"1":"NV","2":"0.170"},{"1":"NY","2":"0.726"},{"1":"OH","2":"0.394"},{"1":"OK","2":"0.118"},{"1":"OR","2":"0.192"},{"1":"PA","2":"0.504"},{"1":"RI","2":"0.048"},{"1":"SC","2":"0.182"},{"1":"SD","2":"0.034"},{"1":"TN","2":"0.240"},{"1":"TX","2":"1.036"},{"1":"UT","2":"0.066"},{"1":"VA","2":"0.302"},{"1":"VT","2":"0.034"},{"1":"WA","2":"0.278"},{"1":"WI","2":"0.284"},{"1":"WV","2":"0.054"},{"1":"WY","2":"0.026"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<pre class="r"><code>#histogram
+ggplot(ac_pc_pb2,aes(x=reorder(as.factor(State),-ac_pc_pb), y=ac_pc_pb))+
+  geom_col(fill=&quot;dark green&quot;, color=&quot;black&quot;)+
+  labs(x=&quot;US States&quot;,y=&quot;Alcohol Consumption per Brewery Count&quot;) +
+  ggtitle(&quot;Alcohol Consumption per Brewey Count in Each State&quot;) +
+  theme(axis.text.x = element_text(angle = 90))</code></pre>
+<p><img src="CaseStudy1_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<pre class="r"><code>order1=ac_pc_pb%&gt;%summarise(ac_pc_pb=ac_pc_pb$Gallons/n())
+order1</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["ac_pc_pb"],"name":[1],"type":["dbl"],"align":["right"]}],"data":[{"1":"0.034"},{"1":"0.160"},{"1":"0.088"},{"1":"0.266"},{"1":"1.624"},{"1":"0.272"},{"1":"0.146"},{"1":"0.058"},{"1":"0.940"},{"1":"0.328"},{"1":"0.062"},{"1":"0.124"},{"1":"0.082"},{"1":"0.504"},{"1":"0.236"},{"1":"0.090"},{"1":"0.144"},{"1":"0.194"},{"1":"0.300"},{"1":"0.208"},{"1":"0.066"},{"1":"0.394"},{"1":"0.256"},{"1":"0.254"},{"1":"0.106"},{"1":"0.054"},{"1":"0.374"},{"1":"0.040"},{"1":"0.068"},{"1":"0.108"},{"1":"0.350"},{"1":"0.078"},{"1":"0.170"},{"1":"0.726"},{"1":"0.394"},{"1":"0.118"},{"1":"0.192"},{"1":"0.504"},{"1":"0.048"},{"1":"0.182"},{"1":"0.034"},{"1":"0.240"},{"1":"1.036"},{"1":"0.066"},{"1":"0.302"},{"1":"0.034"},{"1":"0.278"},{"1":"0.284"},{"1":"0.054"},{"1":"0.026"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<pre class="r"><code>sort1=sort(order1$ac_pc_pb, decreasing = TRUE)
+sort1</code></pre>
+<pre><code>##  [1] 1.624 1.036 0.940 0.726 0.504 0.504 0.394 0.394 0.374 0.350 0.328 0.302
+## [13] 0.300 0.284 0.278 0.272 0.266 0.256 0.254 0.240 0.236 0.208 0.194 0.192
+## [25] 0.182 0.170 0.160 0.146 0.144 0.124 0.118 0.108 0.106 0.090 0.088 0.082
+## [37] 0.078 0.068 0.066 0.066 0.062 0.058 0.054 0.054 0.048 0.040 0.034 0.034
+## [49] 0.034 0.026</code></pre>
+<pre class="r"><code>summary(sort1)</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##  0.0260  0.0705  0.1760  0.2539  0.2960  1.6240</code></pre>
+<pre class="r"><code>#heatmap
+lookup = data.frame(abb = state.abb, State = state.name) #make a dataframe of state names and abbreviations
+ac_pc_pb2$State &lt;- trimws(ac_pc_pb2$State, which = c(&quot;both&quot;))
+colnames(ac_pc_pb2)[1] = &quot;abb&quot;
+alcohol_cons2$abb &lt;- trimws(alcohol_cons2$abb, which = c(&quot;both&quot;))
+ac_pc_pb3 = merge(ac_pc_pb2, lookup, by = &quot;abb&quot;) #merge datasets
+ac_pc_pb3$region &lt;- tolower(ac_pc_pb3$State) #create &quot;region&quot; column
+
+ac_pc_pb3 = ac_pc_pb3 %&gt;% select(abb, ac_pc_pb, region)
+
+states &lt;- map_data(&quot;state&quot;)
+map.df &lt;- merge(states, ac_pc_pb3, by = &quot;region&quot;, all.x = T)
+map.df &lt;- map.df[order(map.df$order),] #sort the data
+
+ggplot(map.df, aes(x=long, y=lat, group=group)) +
+  geom_polygon(aes(fill=ac_pc_pb)) + geom_path() +
+  scale_fill_gradientn(colours=rev(hcl.colors(10, palette = &quot;Emrld&quot;)),na.value=&quot;grey90&quot;) +
+  ggtitle(&quot;Total Alcohol Consumption per Brewery by State&quot;) +labs(x=&quot;Longitude&quot;, y=&quot;Latitude&quot;) +
+  coord_map()</code></pre>
+<p><img src="CaseStudy1_files/figure-html/unnamed-chunk-12-2.png" width="672" /></p>
+<pre class="r"><code>total_gallons=sum(alcohol_cons2$Gallons)
+total_gallons</code></pre>
+<pre><code>## [1] 634.8</code></pre>
+<pre class="r"><code>top5=sort(alcohol_cons2$Gallons, decreasing = TRUE)
+top5_df=as.data.frame(top5)
+top5_data=top5_df%&gt;%top_n(5)</code></pre>
+<pre><code>## Selecting by top5</code></pre>
+<pre class="r"><code>top5_data</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["top5"],"name":[1],"type":["dbl"],"align":["right"]}],"data":[{"1":"81.2"},{"1":"51.8"},{"1":"47.0"},{"1":"36.3"},{"1":"25.2"},{"1":"25.2"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<pre class="r"><code>total_top5=(sum(top5_data)/total_gallons)*100
+total_top5</code></pre>
+<pre><code>## [1] 42.01323</code></pre>
+<pre class="r"><code>bottom5=sort(alcohol_cons2$Gallons, decreasing = TRUE)
+bottom5</code></pre>
+<pre><code>##  [1] 81.2 51.8 47.0 36.3 25.2 25.2 19.7 19.7 18.7 17.5 16.4 15.1 15.0 14.2 13.9
+## [16] 13.6 13.3 12.8 12.7 12.0 11.8 10.4  9.7  9.6  9.1  8.5  8.0  7.3  7.2  6.2
+## [31]  5.9  5.4  5.3  4.5  4.4  4.1  3.9  3.4  3.3  3.3  3.1  2.9  2.7  2.7  2.4
+## [46]  2.0  1.7  1.7  1.7  1.3</code></pre>
+<pre class="r"><code>bottom5_df=as.data.frame(bottom5)
+bottom5_data=bottom5_df%&gt;%top_n(-5)</code></pre>
+<pre><code>## Selecting by bottom5</code></pre>
+<pre class="r"><code>bottom5_data</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["bottom5"],"name":[1],"type":["dbl"],"align":["right"]}],"data":[{"1":"2.0"},{"1":"1.7"},{"1":"1.7"},{"1":"1.7"},{"1":"1.3"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<pre class="r"><code>total_bottom5=(sum(bottom5_data)/total_gallons)*100
+total_bottom5</code></pre>
+<pre><code>## [1] 1.323251</code></pre>
+<p>In our research, we found data on total alcohol consumption by state and decided to incorporate it into our analysis. California has the highest alcohol consumption per brewery count at 1.624 million gallons. Most of the states have alcohol consumption per brewery count is in between 0.026 to 0.5 million gallons. The top 5 states (California, Texas, Florida, New York and Illinois) account for 42% of all the alcohol consumed per brewery count. The bottom 5 states (North Dakota, Alaska, South Dakota, Vermont, and Wyoming) account for 1.32% of all the alcohol consumed per brewery count.</p>
+<p>In conclusion, we found that IPAs and other ales make up 64% of all craft beers. There’s a linear relationship between alcohol content and bitterness within a beer, and the relationship is stronger for IPAs than for other ales. Given alcohol content and international bitterness rating, we can identify a beer as an IPA or as an other ale with over 85% accuracy. Finally, the five states with the greatest alcohol consumption per brewery make up over 40% of total alcohol consumption per brewery. If Budweiser wants to increase their market share by tapping into the craft brew market, they should focus on these states, and they should focus on IPAs or other ales. Despite the market saturation, these seem to be the states with the most demand. Additional research could include reviewing sales data on top craft beers and reviewing brewery and alcohol laws for different states.</p>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
