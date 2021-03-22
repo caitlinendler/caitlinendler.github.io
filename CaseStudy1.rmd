@@ -1,0 +1,496 @@
+---
+title: "Case Study 1"
+author: "Caitlin Endler and Rashmi Patel"
+date: "2/21/2021"
+output: 
+  html_document:
+    df_print: paged
+---
+
+
+Budweiser is exploring the craft brewery market. We will review current trends for beer in this industry and provide insight for growth opportunities in the market.
+
+
+
+Import and inspect data
+
+```{r}
+library(tidyverse)
+library(class)
+library(maps)
+library(caret)
+
+#Read Beers.csv
+beers_data=read.csv(file.choose(), header=TRUE)
+head(beers_data)
+dim(beers_data)
+Beers=beers_data%>%rename(Beer_Name=Name)
+head(Beers)
+
+#Read Breweries.csv
+breweries_data=read.csv(file.choose(), header=TRUE)
+head(breweries_data)
+dim(breweries_data)
+Breweries=breweries_data%>%rename(Brewery_id=Brew_ID,Brewery_Name=Name)
+head(Breweries)
+```
+
+
+
+Question 1: How many breweries are present in each state?
+
+```{r}
+#summarize data
+Brew=Breweries%>%group_by(State)%>%summarise(TotalBreweries=n())
+Brew
+Brew_df=as.data.frame(Brew)
+head(Brew_df)
+
+#display in a bar chart
+Brew_df%>%ggplot(aes(x=reorder(as.factor(State),-TotalBreweries),y=TotalBreweries)) +
+  geom_col(fill="sky blue",color="black")+labs(x="US 51 States",y="Number of Breweries") +
+  ggtitle("Number of Breweries in Each State") +
+  theme(axis.text.x = element_text(angle = 90))
+
+#heat map
+breweries2 = read.csv(file.choose())
+lookup = data.frame(abb = state.abb, State = state.name) #make a dataframe of state names and abbreviations
+colnames(breweries2)[4] = "abb" #change column name
+breweries2$abb <- trimws(breweries2$abb, which = c("both")) #trim white space
+breweries3 = merge(breweries2, lookup, by ="abb") #merge datasets
+breweries_mapdata = count(breweries3, State) #count occurance of each state
+colnames(breweries_mapdata)[2] = "Breweries" #change column name from "n" to "breweries"
+breweries_mapdata$region <- tolower(breweries_mapdata$State) #create "region" column
+breweries_mapdata = breweries_mapdata[-1] #remove states column
+states <- map_data("state")
+map.df <- merge(states, breweries_mapdata, by = "region", all.x = T)
+map.df <- map.df[order(map.df$order),] #sort the data
+
+ggplot(map.df, aes(x=long, y=lat, group=group)) +
+  geom_polygon(aes(fill=Breweries)) + geom_path() +
+  scale_fill_gradientn(colours=rev(heat.colors(10)),na.value="grey90") +
+  ggtitle("Breweries by State") +labs(x="Longitude", y="Latitude") +
+  coord_map()
+
+```
+
+Here is a barchart and a heat map displaying the number of breweries in each state. Colorado has the maximum number of breweries in United States with a count of 47. Other than Colorado, the states having most breweries are clustered along US border and coasts.The top 5 States with maximum breweries are Colorado, California, Michigan, Oregon, and Texas.The bottom 4 States with minimum breweries are DC, South Dakota, North Dakota, West Virginia, each with only one brewery in entire state.
+
+
+
+
+Question 2: Merge the datasets
+
+```{r}
+Full_data=merge(Beers,Breweries, by="Brewery_id")
+head(Full_data)
+tail(Full_data)
+dim(Full_data)
+```
+Types of craft beers
+
+```{r}
+Full_data["Class"] = ifelse(str_detect(Full_data$Style,"IPA"),"IPA", 
+                      ifelse(str_detect(Full_data$Style,"Ale"),"Ale", 
+                      ifelse(str_detect(Full_data$Style,"Lager"),"Lager", 
+                      ifelse(str_detect(Full_data$Style,"Stout"),"Stout", 
+                      ifelse(str_detect(Full_data$Style,"Pilsner"),"Pilsner", 
+                      ifelse(str_detect(Full_data$Style,"Pilsener"),"Pilsner", 
+                      ifelse(str_detect(Full_data$Style,"Porter"),"Porter", 
+                      ifelse(str_detect(Full_data$Style,"APA"),"APA", 
+                      ifelse(str_detect(Full_data$Style,"Cider"),"Cider", 
+                      ifelse(str_detect(Full_data$Style,"Witbier"),"Witbier",
+                      ifelse(str_detect(Full_data$Style,"Kölsch"),"Kölsch", 
+                      ifelse(str_detect(Full_data$Style,"Fruit"),"Fruit", 
+                      ifelse(str_detect(Full_data$Style,"Hefeweizen"),"Hefeweizen", 
+                      ifelse(str_detect(Full_data$Style,"Oktoberfest"),"Oktoberfest", 
+                      ifelse(str_detect(Full_data$Style,"Bitter"),"Bitter",
+                             "Other")))))))))))))))
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+Full_data%>%ggplot(aes(x = Class, fill=Class))+geom_bar()+
+  ggtitle("Distribution of Beer Classes")+coord_flip()+xlab("Class of carft beers")+ylab("Count")
+
+
+total_beer=length(Full_data$Class)
+total_beer
+total_IPA=sum(str_detect(Full_data$Class, "IPA"))
+total_IPA
+total_Ale=sum(str_detect(Full_data$Class, "Ale"))
+total_Ale
+total_IPA_Ale=((total_Ale+total_IPA)/total_beer)*100
+total_IPA_Ale
+
+```
+There are 100 different style of craft beers brewed in the United States. Classes of Beer have style variants, i.e., Ales include English Pale, Irish Red, etc. When grouped into classes, IPA’s And Ales account for 64% of all craft beers.
+
+
+Question 3: Address the missing values in each column
+
+```{r}
+#find out how many missing values there are in each column
+d1=sum(is.na(Full_data$ABV))
+d1#ABV has 62 NA values
+d2=sum(is.na(Full_data$IBU))
+d2#IBU has 1005 NA values
+d3=sum(is.na(Full_data$Beer_Name))
+d3
+d4=sum(is.na(Full_data$Style))
+d4
+d5=sum(is.na(Full_data$Ounces))
+d5
+d6=sum(is.na(Full_data$Brewery_Name))
+d6
+d7=sum(is.na(Full_data$City))
+d7
+d8=sum(is.na(Full_data$State))
+d8
+
+#visualize missing values
+missing_values=data.frame(column=c("ABV","IBU","Beer_Name","Style","Ounces","Brewery_Name","City","State" ), count=c(d1,d2,d3,d4,d5,d6,d7,d8))
+missing_values
+
+ggplot(missing_values, aes(x=column, y=count)) +
+  geom_segment( aes(x=column, xend=column, y=0, yend=count)) +
+  geom_point( size=3, color="red", fill=alpha("orange", 0.3), alpha=0.7, shape=21, stroke=2)+
+  labs(x="Columns in Beers And Breweries data", y="Count of Missing Values",title="Addressing Missing Values in Each Column for Beer and Breweries Data")+
+theme(axis.text.x = element_text(angle = 90))
+
+
+#Boxplot of IBU  with NA values
+#NA_df_IBU=ggplot(Full_data,aes(y=reorder(Class,-IBU),x=IBU)) +
+#  geom_boxplot(fill="pink",color="black") +
+#  labs(y="Beer Class",x="International Bitterness Unit") +
+#  ggtitle("International Bitterness Unit by class") +
+#  theme(axis.text.x = element_text(angle = 90))
+
+#NA_df_IBU
+
+#Boxplot of IBV with NA values
+#NA_df_ABV=ggplot(Full_data,aes(y=reorder(Class,-ABV),x=ABV)) +
+#  geom_boxplot(fill="dark green",color="black") +
+#  labs(y="Beer Class",x="Alcohol by Volume") +
+#  ggtitle("Alcohol by Volume by class") +
+#  theme(axis.text.x = element_text(angle = 90))
+
+#NA_df_ABV
+
+
+#make a new column where null ABV values now have ABV mean
+#imp = imputed
+Full_data$ABV.imp.mean =ifelse(is.na(Full_data$ABV), mean(Full_data$ABV, na.rm=TRUE), Full_data$ABV)
+head(Full_data$ABV.imp.mean)
+sum(is.na(Full_data$ABV.imp.mean)) #no more NAs
+
+
+#make a new column where null IBU values now have IBU mean
+Full_data$IBU.imp.mean = ifelse(is.na(Full_data$IBU), mean(Full_data$IBU, na.rm=TRUE), Full_data$IBU)
+head(Full_data$IBU.imp.mean)
+sum(is.na(Full_data$IBU.imp.mean)) #no more NAs
+
+
+```
+We found 62 null values in the ABV column (2.6%) and 1005 in the IBU column (42%). No IBU rating is available for South Dakota. Thinking the missing values would be close to the average, we replaced them with the averages of the present values.
+
+
+
+
+Question 4: Compute and plot median alcohol content and international bitterness units for each state.
+
+```{r}
+#compute medians
+Median_df_imp=Full_data%>%group_by(State)%>%summarise(median_ABV_imp=median(ABV.imp.mean), median_IBU_imp=median(IBU.imp.mean))
+Median_df_imp=as.data.frame(Median_df_imp)
+head(Median_df_imp)
+
+#plot medians for ABV without na values
+Median_df_ABV=ggplot(Median_df_imp,aes(x=reorder(State,-median_ABV_imp),y=median_ABV_imp)) +
+  geom_col(fill="sky blue",color="black") +
+  labs(x="US 51 States",y="Median Alcohol Content by Volume") +
+  ggtitle("Median Alcohol Content by Volume in Each State") +
+  theme(axis.text.x = element_text(angle = 90))
+
+Median_df_ABV
+
+#plot medians for IBU without na values
+Median_df_IBU=ggplot(Median_df_imp,aes(x=reorder(State,-median_IBU_imp),y=median_IBU_imp)) +
+  geom_col(fill="pink",color="black") +
+  labs(x="US 51 States",y="Median International Bitterness Units") +
+  ggtitle("International Bitterness Units in Each State") +
+  theme(axis.text.x = element_text(angle = 90))
+
+Median_df_IBU
+
+#table
+Median_df_imp
+
+```
+Here we see the median alcohol contents and international bitterness units for each state (including Washington, D.C.). 
+Median alcohol content by volume doesn't appear to vary much by state, with most states having a median value between 0.05 and 0.06. The top 5 states with maximum median ABV are DC, West Virginia, New Mexico, Alabama, and Connecticut. The bottom 5 states with minimum median ABV are Kansas, North Dakota, Wyoming, New Jersey and Utah. 
+For most states, the median IBU rating is in the low 40's. The top 5 states with maximum median IBU are West Virginia, Delaware, Mississippi, Alabama, and Arkansas. The bottom 5 states with minimum median IBU are North Dakota, Rhode Island, Wyoming, Iowa, Kansas.
+
+
+Question 5: Which state has the maximum alcoholic beer, and which has the most bitter beer?
+```{r}
+max.abv =Full_data %>% filter(ABV==max(Full_data$ABV,na.rm=TRUE)) %>% select(Beer_Name,ABV,Class,Style,State,Brewery_Name)
+max.abv
+#Answer Colorado, Lee Hill Series Vol.5, ABV = 0.128, Upslope Brewing Company
+max.ibu = Full_data %>% filter(IBU==max(Full_data$IBU,na.rm=TRUE)) %>% select(Beer_Name,IBU,Class,Style,State,Brewery_Name)
+max.ibu
+#Answer Oregon, Bitter Bitch Imperial, IBU = 138
+
+
+```
+Upslope Brewing Company in Colorado has the most alcoholic beer with name “Lee Hill Series Vol. 5 - Belgian Style Quadrupel Ale,” of 19.2 Oz, with  ABV=12.8% and no IBU score  given.
+Astoria Brewing Company in Oregon has the most bitter beer with name “Bitter Bitch Imperial IPA,” of 12 Oz,  with IBU=138 and ABV=8.2%. The IBU rating of this beer is nearly four times the mean IBU rating.
+
+
+Question 6: Comment on the summary statistics
+```{r}
+#with NAs
+summary_ABV=summary(Full_data$ABV)#for ABV
+summary_ABV
+
+ABV_histogram = Full_data %>% ggplot(aes(x = ABV, fill=Class)) + 
+  geom_histogram( color = "black") + 
+  ggtitle("Distribution of ABV with NA values")+labs(y="Count", x="Alcohol By Volume")
+ABV_histogram
+
+#without NAs
+summary_imp_ABV=summary(Full_data$ABV.imp.mean)#for ABV
+summary_imp_ABV
+
+ABV_imp_histogram = Full_data %>% ggplot(aes(x = ABV.imp.mean, fill=Class)) + 
+  geom_histogram(color="black") + 
+  ggtitle("Distribution of ABV with Imputed Mean Values instead of NA")+
+  labs(y="Count", x="Alcohol By Volume")
+ABV_imp_histogram
+
+```
+
+Our visual evidence suggests that the distribution of alcohol content by volume is slightly right skewed, but mostly normal. With our decision to replace the null values with the mean, only the median is affected of the summary statistics, and then only slightly.
+The skewness appears to come largely from IPAs, indicating that IPAs are more alcoholic than other beers.
+
+
+
+Question 7: Is there a relationship between bitterness and alcohol content?
+
+```{r}
+#with NAs
+IBU_ABV=ggplot(Full_data,aes(x=ABV, y=IBU)) +
+  geom_point() +
+  geom_smooth(method="lm") +
+  ggtitle("Relationship between ABV and IBU with NA Values")+
+  labs(x="Alcohol By Volume",y="International Bitterness Units")
+IBU_ABV
+
+
+lm_full_data=lm(IBU~ABV, Full_data)
+lm_full_data
+summary(lm_full_data)
+
+#without NAs
+imp_IBU_ABV=ggplot(Full_data,aes(x=ABV.imp.mean, y=IBU.imp.mean)) +
+  geom_point() +
+  geom_smooth(method="lm") +
+  ggtitle("Relationship between ABV and IBU with Imputed Mean Values")+
+  labs(x="Alcohol By Volume",y="International Bitterness Units")
+imp_IBU_ABV
+
+
+lm_full_data_imp=lm(IBU.imp.mean~ABV.imp.mean, Full_data)
+lm_full_data_imp
+summary(lm_full_data_imp)
+```
+There appears to be a positive relationship between alcohol content by volume and international bitterness units.This is true regardless of whether we use the imputed null values, though less of the IBU variability is explained by the alcohol content with the imputed values (27% with imputed values vs. 45% without). Perhaps this relationship is positive because breweries wish to balance the sugar content (which makes beer more alcoholic with the fermentation process) with the hops content (which can make beer bitter). Or perhaps it is that many people find alcohol (ethanol) to be bitter.
+
+
+Question 8: Investigate the difference between IPAs and other Ales using KNN
+
+```{r}
+Full_data["Class2"] = ifelse(str_detect(Full_data$Style,"IPA"),"IPA", 
+                      ifelse(str_detect(Full_data$Style,"Ale"),"Ale",
+                        ifelse(str_detect(Full_data$Style, "APA"), "Ale",
+                        NA
+                       )))
+
+just_ales = na.omit(Full_data, cols = c("Class2"))
+#head(just_ales)
+
+#knn classifier
+set.seed(877)
+iterations = 100
+numks = 60
+splitPerc = .70
+masterAcc = matrix(nrow = iterations, ncol = numks)
+masterSens = matrix(nrow = iterations, ncol = numks)
+masterSpec = matrix(nrow = iterations, ncol = numks)
+for(j in 1:iterations)
+{
+  accs = data.frame(accuracy = numeric(60), k = numeric(60))
+  trainIndices = sample(1:dim(just_ales)[1],round(splitPerc * dim(just_ales[1])))
+  train = just_ales[trainIndices,]
+  test = just_ales[-trainIndices,]
+  for(i in 1:numks)
+  {
+    classifications = knn(train[,c("IBU.imp.mean","ABV.imp.mean")],test[,c("IBU.imp.mean","ABV.imp.mean")],train$Class2, prob = TRUE, k = i)
+    table(classifications,test$Class2)
+    CM = confusionMatrix(table(classifications,test$Class))
+    masterAcc[j,i] = CM$overall[1]
+    masterSens[j,i] = mean(CM$byClass[1])
+    masterSpec[j,i] = mean(CM$byClass[2]) 
+  }
+  
+}
+
+
+
+MeanAcc = colMeans(masterAcc)
+MeanSens = colMeans(masterSens)
+MeanSpec = colMeans(masterSpec)
+
+
+#which is the best k
+plot(seq(1,numks,1),MeanAcc, type = "l", main = "Accuracy", ylab = "Mean Accuracy", xlab = "Number of Neighbors")
+which.max(MeanAcc)
+
+
+max(MeanAcc) #Accuracy with k=5
+MeanSens[5] #Sensitivity with k=5
+MeanSpec[5] #Specificity with k=5
+
+
+Full_data %>% filter(Class == "IPA" | Class == "Ale") %>% ggplot(mapping=aes(y=IBU, x=ABV,color=Class)) + geom_point()+ labs(y="International Bitterness Units",x="Alcohol Content by Volume",title="Correlation between ABV and IBU")
+
+```
+
+We trained our KNN model with 100 iterations to find the number of neighbors with the highest accuracy. We found that to be k=5. Given ABV and IBU, our KNN model has over an 85% accuracy rate--that is the number of beers correctly classified as either IPA or other Ale. The model has a sensitivity of over 88%--that is of the Ales, over 88% were identified correctly. Finally, the model has a specificity of over 81%--that is, of the IPAs, over 81% were identified correctly.
+
+
+Question 9: Provide extra insights
+
+Insight 1: "ABV and IBU relationship for IPA and Ale"
+
+```{r}
+Full_data %>% filter(Class == "IPA" | Class == "Ale") %>% ggplot(mapping=aes(y=IBU, x=ABV,color=Class)) + geom_point()+ geom_smooth(method="lm",se=FALSE,size=1)+ labs(title="Correlation between ABV and IBU")
+
+ipa=Full_data %>% filter(Class == "IPA")
+#ipa
+fit_ipa=lm(ABV~IBU,data=ipa)
+summary(fit_ipa)
+
+ale=Full_data %>% filter(Class == "Ale")
+#ale
+fit_ale=lm(ABV~IBU,data=ale)
+summary(fit_ale)
+
+ale_ounce=Full_data %>%group_by(Class,Ounces)%>%filter(Class == "Ale")
+summary(ale_ounce)
+
+ipa_ounce=Full_data %>%group_by(Class,Ounces)%>%filter(Class == "IPA")
+summary(ipa_ounce)
+
+```
+For IPAs, the relationship between ABV and IBU is once again positive, with an estimated 41% of variation in IBU attributed to ABV.
+For other ales, a positive relationship, with an estimated 24% of variation in IBU attributed to ABV.
+
+
+Insight 2: Alcohol consumption per capita per brewery
+
+```{r}
+alcohol_cons = read.csv(file.choose()) #data collected from https://vinepair.com/articles/map-states-drink-alcohol-america-2020/
+lookup = data.frame(abb = state.abb, State = state.name) #make a dataframe of state names and abbreviations
+alcohol_cons$State <- trimws(alcohol_cons$State, which = c("both")) #trim white space
+alcohol_cons2 = merge(alcohol_cons, lookup, by ="State") #merge datasets
+colnames(alcohol_cons2)[3] = "Gallons" #change column name
+alcohol_cons2$Gallons = str_replace(alcohol_cons2$Gallons, "M", "") #remove M
+alcohol_cons2$Gallons = as.numeric(alcohol_cons2$Gallons) #make numeric
+alcohol_cons2$region <- tolower(alcohol_cons2$State) #create "region" column
+alcohol_cons2 = alcohol_cons2[-1] #remove states column
+nd = c("47", 2, "ND", "north dakota") #add north dakota back in
+names(nd) = c("Rank", "Gallons", "abb", "region")
+alcohol_cons2 = rbind(alcohol_cons2, nd)
+alcohol_cons2 = alcohol_cons2[-1]
+alcohol_cons2$Gallons = as.numeric(alcohol_cons2$Gallons) #make numeric again
+#states <- map_data("state")
+#map.df <- merge(states, alcohol_cons2, by = "region", all.x = T)
+#map.df <- map.df[order(map.df$order),] #sort the data
+#ggplot(map.df, aes(x=long, y=lat, group=group)) +
+#  geom_polygon(aes(fill=Gallons)) + geom_path() +
+#  scale_fill_gradientn(colours=rev(hcl.colors(10, palette = "Emrld")),na.value="grey90") +
+#  ggtitle("Total Alcohol Consumption by State") +labs(x="Longitude", y="Latitude")
+#  coord_map()
+
+
+Brew_df$State <- trimws(Brew_df$State, which = c("both"))
+
+#alcohol consumption per brewery
+ac_pc_pb = merge(Brew_df, alcohol_cons2, by.x = "State", by.y = "abb")
+
+ac_pc_pb2 = ac_pc_pb %>% summarise(State = State, ac_pc_pb = Gallons/n())
+
+ac_pc_pb2
+
+#histogram
+ggplot(ac_pc_pb2,aes(x=reorder(as.factor(State),-ac_pc_pb), y=ac_pc_pb))+
+  geom_col(fill="dark green", color="black")+
+  labs(x="US States",y="Alcohol Consumption per Brewery Count") +
+  ggtitle("Alcohol Consumption per Brewey Count in Each State") +
+  theme(axis.text.x = element_text(angle = 90))
+
+order1=ac_pc_pb%>%summarise(ac_pc_pb=ac_pc_pb$Gallons/n())
+order1
+sort1=sort(order1$ac_pc_pb, decreasing = TRUE)
+sort1
+summary(sort1)
+
+#heatmap
+lookup = data.frame(abb = state.abb, State = state.name) #make a dataframe of state names and abbreviations
+ac_pc_pb2$State <- trimws(ac_pc_pb2$State, which = c("both"))
+colnames(ac_pc_pb2)[1] = "abb"
+alcohol_cons2$abb <- trimws(alcohol_cons2$abb, which = c("both"))
+ac_pc_pb3 = merge(ac_pc_pb2, lookup, by = "abb") #merge datasets
+ac_pc_pb3$region <- tolower(ac_pc_pb3$State) #create "region" column
+
+ac_pc_pb3 = ac_pc_pb3 %>% select(abb, ac_pc_pb, region)
+
+states <- map_data("state")
+map.df <- merge(states, ac_pc_pb3, by = "region", all.x = T)
+map.df <- map.df[order(map.df$order),] #sort the data
+
+ggplot(map.df, aes(x=long, y=lat, group=group)) +
+  geom_polygon(aes(fill=ac_pc_pb)) + geom_path() +
+  scale_fill_gradientn(colours=rev(hcl.colors(10, palette = "Emrld")),na.value="grey90") +
+  ggtitle("Total Alcohol Consumption per Brewery by State") +labs(x="Longitude", y="Latitude") +
+  coord_map()
+
+
+total_gallons=sum(alcohol_cons2$Gallons)
+total_gallons
+top5=sort(alcohol_cons2$Gallons, decreasing = TRUE)
+top5_df=as.data.frame(top5)
+top5_data=top5_df%>%top_n(5)
+top5_data
+total_top5=(sum(top5_data)/total_gallons)*100
+total_top5
+
+bottom5=sort(alcohol_cons2$Gallons, decreasing = TRUE)
+bottom5
+bottom5_df=as.data.frame(bottom5)
+bottom5_data=bottom5_df%>%top_n(-5)
+bottom5_data
+total_bottom5=(sum(bottom5_data)/total_gallons)*100
+total_bottom5
+
+```
+In our research, we found data on total alcohol consumption by state and decided to incorporate it into our analysis.
+California has the highest alcohol consumption per brewery count at 1.624 million gallons. 
+Most of the states have alcohol consumption per brewery count is in between 0.026 to 0.5 million gallons. 
+The top 5 states (California, Texas, Florida, New York and Illinois) account for 42% of all the alcohol consumed per brewery count. 
+The bottom 5 states (North Dakota, Alaska, South Dakota, Vermont, and Wyoming) account for 1.32% of all the alcohol consumed per brewery count.
+
+
+
+
+
+In conclusion, we found that IPAs and other ales make up 64% of all craft beers. There's a linear relationship between alcohol content and bitterness within a beer, and the relationship is stronger for IPAs than for other ales. Given alcohol content and international bitterness rating, we can identify a beer as an IPA or as an other ale with over 85% accuracy. Finally, the five states with the greatest alcohol consumption  per brewery make up over 40% of total alcohol consumption per brewery. If Budweiser wants to increase their market share by tapping into the craft brew market, they should focus on these states, and they should focus on IPAs or other ales. Despite the market saturation, these seem to be the states with the most demand. Additional research could include reviewing sales data on top craft beers and reviewing brewery and alcohol laws for different states.
+
