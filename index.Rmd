@@ -1,0 +1,14 @@
+---
+title: "About Me"
+author: "Caitlin Endler"
+date: "3/22/2021"
+output: html_document
+---
+
+
+My name is Caitlin Endler.
+I was born in Texas, grew up in California, and now live in Dallas with my husband and two children.
+I got my undergraduate degree in mathematics-applied science from UCSD and am now a master's student at SMU.
+My interests include math, science, gardening, dance, and music.
+
+The other tabs represent work/analyses that I have completed. Please check them out!
