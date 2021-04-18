@@ -1,0 +1,774 @@
+---
+title: "Case Study 2"
+output:
+  html_document:
+    df_print: paged
+---
+
+DDSAnalytics has asked us to create a model to predict attrition and to find insights related to job roles. We have also been asked to create a model to predict salary. We will use KNN, Naive Bayes, and Multiple Linear Regression to build these models.
+
+```{r}
+#import the data
+data = read.csv(file.choose()) #CaseStudy2-data
+head(data)
+str(data)
+summary(data)
+
+library(tidyverse)
+library(caret)
+library(e1071)
+library(class)
+library(GGally)
+
+# Create mode function.
+getmode <- function(v) {
+   uniqv <- unique(v)
+   uniqv[which.max(tabulate(match(v, uniqv)))]
+}
+
+#group by attrition and look at averages or modes
+data %>% group_by(Attrition) %>% summarize(
+  meanAge = mean(Age),
+  modeBusinessTravel = getmode(BusinessTravel),
+  modeDept = getmode(Department),
+  meanDistanceFromHome = mean(DistanceFromHome),
+  meanEd = mean(Education),
+  meanEnvSat = mean(EnvironmentSatisfaction),
+  modeGender = getmode(Gender),
+  meanHourly = mean(HourlyRate),
+  meanJobInvolvement = mean(JobInvolvement),
+  meanJobSat = mean(JobSatisfaction),
+  modeMarital = getmode(MaritalStatus),
+  meanCompaniesWorked = mean(NumCompaniesWorked),
+  modeOvertime = getmode(OverTime),
+  meanPercentSalaryHike = mean(PercentSalaryHike),
+  meanPerfRating = mean(PerformanceRating),
+  meanRelationshipSat = mean(RelationshipSatisfaction),
+  meanStandardHours = mean(StandardHours),
+  modeStock = getmode(StockOptionLevel),
+  meanWorkingYears = mean(TotalWorkingYears),
+  meanTrainings = mean(TrainingTimesLastYear),
+  meanWorkLife = mean(WorkLifeBalance),
+  meanYearsAtCo = mean(YearsAtCompany),
+  meanYearsinRole = mean(YearsInCurrentRole),
+  meanYearsSincePromo = mean(YearsSinceLastPromotion),
+  meanYearsWithMan = mean(YearsWithCurrManager)
+)
+
+#things with apparently significant differences: no - yes
+#YearsWithCurrManager 1.4
+#YearsInCurrentRole 1.5
+#YearsAtCompany 2.1
+#TotalWorkingYears 3.5
+#stockOptionLevel 
+#overTime
+#NumCompaniesWorked -.4
+#MaritalStatus
+#JobSatisfaction .3
+#JobInvolvement .3
+#Age 3
+
+#make everything numeric
+for(i in 1:ncol(data)){
+  if (sapply(data, class)[i] == "character"){
+    data[,i] = as.factor(data[,i])
+  }
+}
+
+
+for(i in 1:ncol(data)){
+  data[,i] = as.numeric(data[,i])
+  }
+
+sapply(data, class)
+
+```
+
+KNN
+```{r}
+#use only most apparently relevant data
+data2 = data %>% select(YearsWithCurrManager, YearsInCurrentRole, YearsAtCompany, TotalWorkingYears, StockOptionLevel, OverTime, NumCompaniesWorked, MaritalStatus, JobSatisfaction, JobInvolvement, Age, Attrition)
+
+splitPerc = .70
+
+trainIndices = sample(1:dim(data2)[1],round(splitPerc * dim(data2)[1]))
+train = data2[trainIndices,]
+test = data2[-trainIndices,]
+
+classifications = knn(train[,c(1,2,4)],test[,c(1,2,4)],train$Attrition,prob = TRUE, k = 5)
+CM = confusionMatrix(table(classifications,test$Attrition)) #14
+
+masterspec.df = data.frame("i" = as.double(), "j" = as.double(), "m" = as.double(), "spec" = as.double())
+
+for(i in 1:11){
+  for(j in 1:11){
+    if (j == i) {next}
+    for(m in 1:11){
+      if (m == j | m == i) {next}
+      classifications = knn(train[,c(i,j,m)],test[,c(i,j,m)],train$Attrition,prob = TRUE, k = 5)
+      CM = confusionMatrix(table(classifications,test$Attrition))
+      masterspec.df = rbind(masterspec.df,c(i,j,m,CM$byClass[2]))
+
+    }
+  }
+}
+
+#masterspec.df %>% arrange(X0) #best spec = 30
+```
+
+```{r}
+#get rid of unneccessary columns: ID, EmployeeCount, Over18, StandardHours
+data3 = data[,-c(1,10,23,28)]
+
+#scale data
+for(i in 1:ncol(data3)){
+  if(i==2){next}
+  data3[,i] = scale(data3[,i])
+}
+
+colnames(data3) <- make.names(colnames(data3))
+
+
+#create train and test sets
+splitPerc = .70
+
+trainIndices = sample(1:dim(data3)[1],round(splitPerc * dim(data3)[1]))
+train = data3[trainIndices,]
+test = data3[-trainIndices,]
+
+#try all the combinations of 3
+master.df = data.frame("i" = as.double(), "j" = as.double(), "m" = as.double(), "spec" = as.double())
+
+#for(i in 1:32){
+#  if(i==2){next}
+#  for(j in 1:32){
+#    if (j == 2 | j >= i) {next}
+#    for(m in 1:32){
+#      if (m == 2 | m >= j) {next}
+#      classifications = knn(train[,c(i,j,m)],test[,c(i,j,m)],train$Attrition,prob = TRUE, k = 5)
+#      CM = confusionMatrix(table(classifications,test$Attrition))
+#      master.df = rbind(masterspec.df,c(i,j,m,CM$byClass[2]))
+
+#    }
+#  }
+#}
+
+#look at best specificity
+names(masterspec.df) = c("i","j","m","spec")
+#desc.masterspec.df  = masterspec.df %>% arrange(-spec) 
+#view(desc.masterspec.df)
+
+#classifications = knn(train[,c(3,21,25)],test[,c(3,21,25)],train$Attrition,prob = TRUE, k = 5)
+#CM = confusionMatrix(table(classifications,test$Attrition))
+#CM
+```
+
+```{r}
+#try all the combinations of 3 and average over several train and test sets
+splitPerc = .70
+iterations = 10
+numks = 5
+
+master.df = data.frame("n" = as.double(), "p" = as.double(), "i" = as.double(), "j" = as.double(), "m" = as.double(), "sens" = as.double(), "spec" = as.double())
+
+#for(n in 1:iterations){
+#  set.seed(n)
+#  accs = data.frame(accuracy = numeric(90), k = numeric(90))
+#  trainIndices = sample(1:dim(data3)[1],round(splitPerc * dim(data3)[1]))
+#  train = data3[trainIndices,]
+#  test = data3[-trainIndices,]
+#  for(p in 1:numks){
+#    for(i in 1:32){
+#      if(i==2){next}
+#      for(j in 1:32){
+#        if (j == 2 | j >= i) {next}
+#        for(m in 1:32){
+#          if (m == 2 | m >= j) {next}
+#          classifications = knn(train[,c(i,j,m)],test[,c(i,j,m)],train$Attrition,prob = TRUE, k = p)
+#          CM = confusionMatrix(table(classifications,test$Attrition))
+#          master.df = rbind(master.df,c(n,p,i,j,m,CM$byClass[1],CM$byClass[2]))
+
+#       }
+#      }
+#    }
+#  }
+#}
+
+names(master.df) = c("n","k","i","j","m","sens","spec")
+#head(master.df)
+#view(master.df)
+
+#final.master.df = master.df %>% group_by(i,j,m,k) %>% summarize(meanSens = mean(sens), meanSpec = mean(spec))
+#final.master.df %>% arrange(-meanSpec)
+
+#master.df %>% arrange(-spec)
+```
+
+
+
+```{r}
+#try one combo and average over many train and test sets and k's
+splitPerc = .70
+iterations = 100
+numks = 90
+
+masterSpec = matrix(nrow = iterations, ncol = numks)
+masterSens = matrix(nrow = iterations, ncol = numks)
+  
+for(j in 1:iterations)
+{
+accs = data.frame(accuracy = numeric(90), k = numeric(90))
+trainIndices = sample(1:dim(data3)[1],round(splitPerc * dim(data3)[1]))
+train = data3[trainIndices,]
+test = data3[-trainIndices,]
+for(i in 1:numks)
+{
+  classifications = knn(train[,c(15,25,21)],test[,c(15,25,21)],train$Attrition, prob = TRUE, k = i)
+  table(classifications,test$Attrition)
+  CM = confusionMatrix(table(classifications,test$Attrition))
+  masterSpec[j,i] = CM$byClass[2]
+  masterSens[j,i] = CM$byClass[1]
+}
+
+}
+
+MeanSpec = colMeans(masterSpec)
+MeanSens = colMeans(masterSens)
+
+plot(seq(1,numks,1),MeanSpec, type = "l")
+
+which.max(MeanSpec)
+max(MeanSpec)
+
+
+
+```
+
+NAIVE BAYES
+```{r}
+#data3 is our scaled data from a couple chunks back
+#data3 = data[,-c(1,10,23,28)]
+
+#scale data
+#for(i in 1:ncol(data3)){
+#  if(i==2){next}
+#  data3[,i] = scale(data3[,i])
+#}
+
+#colnames(data3) <- make.names(colnames(data3))
+
+#try with one train and test set and one combination 
+set.seed(1)
+trainIndicesNB = sample(seq(1:dim(data3)[1]),round(.7*dim(data3)[1]))
+trainNB = data3[trainIndicesNB,]
+testNB = data3[-trainIndicesNB,]
+
+
+trainNB$Attrition = as.factor(trainNB$Attrition)
+testNB$Attrition = as.factor(testNB$Attrition)
+
+
+model = naiveBayes(trainNB[,c(5,4,1)], trainNB$Attrition, laplace = 1)
+table(predict(model, testNB[,c(5,4,1)]), testNB$Attrition)
+CM = confusionMatrix(table(predict(model, testNB[,c(5,4,1)]), testNB$Attrition))
+CM
+```
+
+
+```{r}
+
+#all the combos of 3
+set.seed(3)
+trainIndicesNB = sample(seq(1:dim(data3)[1]),round(.7*dim(data3)[1]))
+trainNB = data3[trainIndicesNB,]
+testNB = data3[-trainIndicesNB,]
+
+trainNB$Attrition = as.factor(trainNB$Attrition)
+testNB$Attrition = as.factor(testNB$Attrition)
+
+masterspecNB.df = data.frame("i" = as.double(), "j" = as.double(), "m" = as.double(), "spec" = as.double())
+
+#for(i in 1:32){
+#  if(i == 2){next}
+#  for(j in 1:32){
+#    if(j == 2 | j >= i){next}
+#    for(m in 1:32){
+#      if(m == 2 | m >= j){next}
+#      model = naiveBayes(trainNB[,c(i,j,m)], trainNB$Attrition, laplace = 1)
+#      table(predict(model, testNB[,c(i,j,m)]), testNB$Attrition)
+#     CM = confusionMatrix(table(predict(model, testNB[,c(i,j,m)]), testNB$Attrition))
+#      masterspecNB.df = rbind(masterspecNB.df,c(i,j,m,CM$byClass[2]))
+#    }
+#  }
+#}
+  
+
+#look at best specificity
+names(masterspecNB.df) = c("i","j","m","spec")
+#desc.masterspecNB.df  = masterspecNB.df %>% arrange(-spec) 
+#view(desc.masterspecNB.df)
+
+
+
+```
+
+
+```{r}
+#average all combinations of 3 over many train and test sets
+
+iterations = 10
+
+masterNB.df = data.frame("p" = as.double(), "i" = as.double(), "j" = as.double(), "m" = as.double(), "sens" = as.double(), "spec" = as.double())
+
+#for (p in 1:iterations)
+#{
+#set.seed(p)
+#trainIndicesNB = sample(seq(1:dim(data3)[1]),round(.7*dim(data3)[1]))
+#trainNB = data3[trainIndicesNB,]
+#testNB = data3[-trainIndicesNB,]
+
+#trainNB$Attrition = as.factor(trainNB$Attrition)
+#testNB$Attrition = as.factor(testNB$Attrition)
+
+
+#  for(i in 1:32){
+#    if(i == 2){next}
+#    for(j in 1:32){
+#      if(j == 2 | j >= i){next}
+#      for(m in 1:32){
+#        if(m == 2 | m >= j){next}
+#        model = naiveBayes(trainNB[,c(i,j,m)], trainNB$Attrition, laplace = 1)
+#        table(predict(model, testNB[,c(i,j,m)]), testNB$Attrition)
+#        CM = confusionMatrix(table(predict(model, testNB[,c(i,j,m)]), testNB$Attrition))
+#        masterNB.df = rbind(masterNB.df,c(p,i,j,m,CM$byClass[1],CM$byClass[2]))
+#      }
+#    }
+#  }
+#}
+
+names(masterNB.df) = c("k","i","j","m","sens","spec")
+#head(masterNB.df)
+#view(masterNB.df)
+
+#final.masterNB.df = masterNB.df %>% group_by(i,j,m) %>% summarize(meanSens = mean(sens), meanSpec = mean(spec))
+#final.masterNB.df %>% arrange(-meanSpec)
+
+
+```
+
+
+```{r}
+classifications = knn(train[,c(14,18,21,25,30)],test[,c(14,18,21,25,30)],train$Attrition,prob = TRUE, k = 1)
+confusionMatrix(table(classifications,test$Attrition)) 
+
+model = naiveBayes(trainNB[,c(18,21,14,25,20)], trainNB$Attrition, laplace = 1)
+table(predict(model, testNB[,c(18,21,14,25,30)]), testNB$Attrition)
+CM = confusionMatrix(table(predict(model, testNB[,c(18,21)]), testNB$Attrition))
+CM
+```
+
+
+We are starting over and trying Huy's suggestion.
+```{r restart}
+#install.packages("Boruta")
+library(Boruta)
+
+#import fresh data
+work_data = read.csv(file.choose()) #CaseStudy2-data
+
+#make categorical variables factors
+for(i in 1:ncol(work_data)){
+  if (sapply(work_data, class)[i] == "character"){
+    work_data[,i] = as.factor(work_data[,i])
+  }
+}
+
+work_data$Education = as.factor(work_data$Education)
+work_data$JobLevel = as.factor(work_data$JobLevel)
+
+
+#get rid of unneccessary columns: ID, EmployeeCount, Over18, StandardHours
+boruta.train = Boruta(Attrition~.-c(ID,EmployeeCount,Over18,StandardHours), data=work_data)
+print(boruta.train)
+
+getSelectedAttributes(boruta.train, withTentative=F)
+boruta.df = attStats(boruta.train)
+print(boruta.df)
+```
+KNN
+```{r knn}
+#make factors numerical
+for(i in 1:ncol(work_data)){
+  if (sapply(work_data, class)[i] == "factor"){
+    work_data[,i] = as.numeric(work_data[,i])
+  }
+}
+
+#scale data
+for(i in 1:ncol(work_data)){
+  if(i==2){next}
+  work_data[,i] = scale(work_data[,i])
+}
+
+colnames(work_data) <- make.names(colnames(work_data))
+
+#make train and test sets
+splitPerc = .70
+
+work_trainIndices = sample(1:dim(work_data)[1],round(splitPerc * dim(work_data)[1]))
+work_train = work_data[work_trainIndices,]
+work_test = work_data[-work_trainIndices,]
+
+
+#model
+classifications = knn(work_train[,c("Age","JobInvolvement","JobLevel","JobRole","MaritalStatus","MonthlyIncome","OverTime","StockOptionLevel","TotalWorkingYears","WorkLifeBalance","YearsAtCompany","YearsWithCurrManager")],work_test[,c("Age","JobInvolvement","JobLevel","JobRole","MaritalStatus","MonthlyIncome","OverTime","StockOptionLevel","TotalWorkingYears","WorkLifeBalance","YearsAtCompany","YearsWithCurrManager")],work_train$Attrition,prob = TRUE, k = 3)
+confusionMatrix(table(classifications,work_test$Attrition)) 
+
+
+```
+
+NAIVE BAYES
+```{r naive bayes}
+set.seed(4)
+work_trainIndicesNB = sample(seq(1:dim(work_data)[1]),round(.7*dim(work_data)[1]))
+work_trainNB = work_data[work_trainIndicesNB,]
+work_testNB = work_data[-work_trainIndicesNB,]
+
+
+work_trainNB$Attrition = as.factor(work_trainNB$Attrition)
+work_testNB$Attrition = as.factor(work_testNB$Attrition)
+
+
+model = naiveBayes(work_trainNB[,c("Age","JobInvolvement","JobLevel","JobRole","MaritalStatus","MonthlyIncome","OverTime","StockOptionLevel","TotalWorkingYears","WorkLifeBalance","YearsAtCompany","YearsWithCurrManager","JobSatisfaction", "NumCompaniesWorked")], work_trainNB$Attrition, laplace = 1)
+table(predict(model, work_testNB[,c("Age","JobInvolvement","JobLevel","JobRole","MaritalStatus","MonthlyIncome","OverTime","StockOptionLevel","TotalWorkingYears","WorkLifeBalance","YearsAtCompany","YearsWithCurrManager","JobSatisfaction", "NumCompaniesWorked")]), work_testNB$Attrition)
+CM = confusionMatrix(table(predict(model,work_testNB[,c("Age","JobInvolvement","JobLevel","JobRole","MaritalStatus","MonthlyIncome","OverTime","StockOptionLevel","TotalWorkingYears","WorkLifeBalance","YearsAtCompany","YearsWithCurrManager","JobSatisfaction", "NumCompaniesWorked")]), work_testNB$Attrition))
+CM #57.14
+
+#model = naiveBayes(work_trainNB[,c("JobInvolvement","JobLevel","JobRole","MaritalStatus","MonthlyIncome","OverTime","StockOptionLevel","TotalWorkingYears","WorkLifeBalance","YearsAtCompany","YearsWithCurrManager","JobSatisfaction", "NumCompaniesWorked")], work_trainNB$Attrition, laplace = 1)
+#table(predict(model, work_testNB[,c("JobInvolvement","JobLevel","JobRole","MaritalStatus","MonthlyIncome","OverTime","StockOptionLevel","TotalWorkingYears","WorkLifeBalance","YearsAtCompany","YearsWithCurrManager","JobSatisfaction", "NumCompaniesWorked")]), work_testNB$Attrition)
+#CM = confusionMatrix(table(predict(model,work_testNB[,c("JobInvolvement","JobLevel","JobRole","MaritalStatus","MonthlyIncome","OverTime","StockOptionLevel","TotalWorkingYears","WorkLifeBalance","YearsAtCompany","YearsWithCurrManager","JobSatisfaction", "NumCompaniesWorked")]), work_testNB$Attrition))
+#CM #54.76
+
+#model = naiveBayes(work_trainNB[,c("JobLevel","JobRole","MaritalStatus","MonthlyIncome","OverTime","StockOptionLevel","TotalWorkingYears","WorkLifeBalance","YearsAtCompany","YearsWithCurrManager","JobSatisfaction", "NumCompaniesWorked")], work_trainNB$Attrition, laplace = 1)
+#table(predict(model, work_testNB[,c("JobLevel","JobRole","MaritalStatus","MonthlyIncome","OverTime","StockOptionLevel","TotalWorkingYears","WorkLifeBalance","YearsAtCompany","YearsWithCurrManager","JobSatisfaction", "NumCompaniesWorked")]), work_testNB$Attrition)
+#CM = confusionMatrix(table(predict(model,work_testNB[,c("JobLevel","JobRole","MaritalStatus","MonthlyIncome","OverTime","StockOptionLevel","TotalWorkingYears","WorkLifeBalance","YearsAtCompany","YearsWithCurrManager","JobSatisfaction", "NumCompaniesWorked")]), work_testNB$Attrition))
+#CM #52.38
+
+
+
+```
+We will now determine the top three contributors.
+```{r top 3}
+#get relevant columns
+work_loop = work_data %>% select(Attrition, Age, JobInvolvement, JobLevel, JobRole, JobSatisfaction, MaritalStatus, MonthlyIncome, NumCompaniesWorked, OverTime, StockOptionLevel, TotalWorkingYears, WorkLifeBalance, YearsAtCompany, YearsWithCurrManager)
+head(work_loop)
+
+set.seed(4)
+
+wl_trainIndicesNB = sample(seq(1:dim(work_loop)[1]),round(.7*dim(work_loop)[1]))
+wl_trainNB = work_loop[wl_trainIndicesNB,]
+wl_testNB = work_loop[-wl_trainIndicesNB,]
+
+
+wl_trainNB$Attrition = as.factor(wl_trainNB$Attrition)
+wl_testNB$Attrition = as.factor(wl_testNB$Attrition)
+
+master_work.df = data.frame("i" = as.double(), "j" = as.double(), "m" = as.double(), "spec" = as.double())
+
+
+for(i in 2:14){
+  for(j in 2:14){
+    if (j >= i) {next}
+    for(m in 2:14){
+      if(m >= j) {next}
+          model = naiveBayes(wl_trainNB[,c(i,j,m)], wl_trainNB$Attrition, laplace = 1)
+          table(predict(model, wl_testNB[,c(i,j,m)]), wl_testNB$Attrition)
+          CM = confusionMatrix(table(predict(model, wl_testNB[,c(i,j,m)]), wl_testNB$Attrition))
+          master_work.df = rbind(master_work.df,c(i,j,m,CM$byClass[2]))
+        }
+      }
+    }
+
+#look at best specificity
+names(master_work.df) = c("i","j","m","spec")
+desc.master_work.df  = master_work.df %>% arrange(-spec) 
+head(desc.master_work.df) #top 3 contributors are JobLevel, MonthlyIncome, and OverTime
+```
+The best model we found was a Naive Bayes model with Age, JobInvolvement, JobLevel, JobRole, JobSatisfaction, MaritalStatus, MonthlyIncome, NumCompaniesWorked, OverTime, StockOptionLevel, TotalWorkingYears, workLifeBalance, YearsAtCompany, and YearWithCurrManager as predictors. Of those, JobLevel, MonthlyIncome, and OverTime contribute most to turnover.
+
+```{r predict attrition}
+#create predictions
+compset_noAtt = read.csv(file.choose()) #CaseStudy2COmpSet No Attrition
+
+for(i in 1:ncol(compset_noAtt)){
+  if (sapply(compset_noAtt, class)[i] == "character"){
+    compset_noAtt[,i] = as.factor(compset_noAtt[,i])
+  }
+}
+
+compset_noAtt$Education = as.factor(compset_noAtt$Education)
+compset_noAtt$JobLevel = as.factor(compset_noAtt$JobLevel)
+
+for(i in 1:ncol(compset_noAtt)){
+  if(sapply(compset_noAtt, class)[i] == "factor"){
+    compset_noAtt[,i] = as.numeric(compset_noAtt[,i])
+  }
+}
+
+model = naiveBayes(work_trainNB[,c("Age","JobInvolvement","JobLevel","JobRole","MaritalStatus","MonthlyIncome","OverTime","StockOptionLevel","TotalWorkingYears","WorkLifeBalance","YearsAtCompany","YearsWithCurrManager","JobSatisfaction", "NumCompaniesWorked")], work_trainNB$Attrition, laplace = 1)
+att_preds = predict(model, compset_noAtt)
+
+
+write.csv(att_preds, "Case2PredictionsEndler Attrition.csv", row.names=FALSE)
+```
+
+
+
+LINEAR REGRESSION
+```{r MLR}
+work_data2 = read.csv(file.choose()) #CaseStudy2-data
+head(work_data2)
+
+#make categorical variables factors
+for(i in 1:ncol(work_data2)){
+  if (sapply(work_data2, class)[i] == "character"){
+    work_data2[,i] = as.factor(work_data2[,i])
+  }
+}
+
+work_data2$Education = as.factor(work_data2$Education)
+work_data2$JobLevel = as.factor(work_data2$JobLevel)
+
+
+#get rid of unneccessary columns: ID, EmployeeCount, Over18, StandardHours
+boruta.train = Boruta(MonthlyIncome~.-c(ID,EmployeeCount,Over18,StandardHours), data=work_data2)
+print(boruta.train)
+
+getSelectedAttributes(boruta.train, withTentative=F)
+boruta.df = attStats(boruta.train)
+print(boruta.df)
+```
+```{r MLR2} 
+set.seed(4)
+trainIndicesMLR = sample(seq(1:dim(work_data2)[1]),round(.7*dim(work_data2)[1]))
+trainMLR = work_data2[trainIndicesMLR,]
+testMLR = work_data2[-trainIndicesMLR,]
+
+fit = lm(MonthlyIncome ~ Age + Attrition + Department + Education + JobLevel + JobRole + NumCompaniesWorked + TotalWorkingYears
+         + YearsAtCompany + YearsInCurrentRole + YearsSinceLastPromotion + YearsWithCurrManager, data=trainMLR)
+#summary(fit)
+ 
+preds = predict(fit, newdata=testMLR)
+
+#install.packages("Metrics")
+library(Metrics)
+
+rmse(testMLR$MonthlyIncome, preds) #996.4812
+
+
+fit1 = lm(MonthlyIncome ~ Attrition + Department + Education + JobLevel + JobRole + NumCompaniesWorked + TotalWorkingYears
+         + YearsAtCompany + YearsInCurrentRole + YearsSinceLastPromotion + YearsWithCurrManager, data=trainMLR)
+preds = predict(fit1, newdata=testMLR)
+rmse(testMLR$MonthlyIncome, preds) #996.5159
+
+
+fit2 = lm(MonthlyIncome ~ Attrition + Department + Education + JobLevel + JobRole + NumCompaniesWorked + TotalWorkingYears
+         + YearsAtCompany + YearsInCurrentRole + YearsSinceLastPromotion, data=trainMLR)
+#summary(fit2)
+preds = predict(fit2, newdata=testMLR)
+rmse(testMLR$MonthlyIncome, preds) #995.4683
+
+fit3 = lm(MonthlyIncome ~ Attrition + Department + Education + JobLevel + JobRole + NumCompaniesWorked + TotalWorkingYears
+         + YearsAtCompany + YearsSinceLastPromotion, data=trainMLR)
+#summary(fit3)
+preds = predict(fit3, newdata=testMLR)
+rmse(testMLR$MonthlyIncome, preds) #996.772
+
+fit4 = lm(MonthlyIncome ~ Department + Education + JobLevel + JobRole + NumCompaniesWorked + TotalWorkingYears
+         + YearsAtCompany + YearsSinceLastPromotion, data=trainMLR)
+#summary(fit4)
+preds = predict(fit4, newdata=testMLR)
+rmse(testMLR$MonthlyIncome, preds) #996.2469
+
+fit5 = lm(MonthlyIncome ~ Education + JobLevel + JobRole + NumCompaniesWorked + TotalWorkingYears
+         + YearsAtCompany + YearsSinceLastPromotion, data=trainMLR)
+#summary(fit5)
+preds = predict(fit5, newdata=testMLR)
+rmse(testMLR$MonthlyIncome, preds) #997.5464
+
+fit6 = lm(MonthlyIncome ~ Department + JobLevel + JobRole + NumCompaniesWorked + TotalWorkingYears
+         + YearsAtCompany + YearsSinceLastPromotion, data=trainMLR)
+#summary(fit6)
+preds = predict(fit6, newdata=testMLR)
+rmse(testMLR$MonthlyIncome, preds) #1003.86
+
+fit7 = lm(MonthlyIncome ~ Department + Education + JobLevel + JobRole + NumCompaniesWorked + TotalWorkingYears
+         + YearsAtCompany, data=trainMLR)
+#summary(fit7)
+preds = predict(fit7, newdata=testMLR)
+rmse(testMLR$MonthlyIncome, preds) #995.032
+
+fit8 = lm(MonthlyIncome ~ Department + Education + JobLevel + JobRole + TotalWorkingYears
+         + YearsAtCompany, data=trainMLR)
+#summary(fit8)
+preds = predict(fit8, newdata=testMLR)
+rmse(testMLR$MonthlyIncome, preds) #993.2068
+
+fit9 = lm(MonthlyIncome ~ Department + Education + JobLevel + JobRole + TotalWorkingYears, data=trainMLR)
+summary(fit9)
+preds = predict(fit9, newdata=testMLR)
+rmse(testMLR$MonthlyIncome, preds) #985.2026 #WINNER
+
+fit10 = lm(MonthlyIncome ~ Education + JobLevel + JobRole + TotalWorkingYears, data=trainMLR)
+#summary(fit10)
+preds = predict(fit10, newdata=testMLR)
+rmse(testMLR$MonthlyIncome, preds) #986.5401
+```
+
+The best model we found used Department, Education, Job Level, Job Role, and Total Working Years as predictors.Though not every indicator variable (for specific job roles, education levels, and job levels) was significant, we chose to keep them in the model.
+
+```{r MLR assumptions}
+#scatter plot matrix
+#pairs(trainMLR[,c("MonthlyIncome","Education", "JobLevel","NumCompaniesWorked","TotalWorkingYears","YearsAtCompany","YearsSinceLastPromotion")])
+pairs(trainMLR[,c("MonthlyIncome","Education","JobLevel","TotalWorkingYears")])
+
+
+#residual plot
+resid9 = resid(fit9)
+plot(trainMLR$MonthlyIncome, resid9,  ylab="Residuals", xlab="Monthly Income", main="Residuals") 
+
+#QQ plot
+qqnorm(resid9)
+
+```
+Addressing the assumptions:
+
+Linearity: There are linear relationships between the response variable (MonthlyIncome) and the explanatory variables in the model (fit9).
+
+Constant variance: The residual plot shows evidence of clustering. This is because the incomes tend to be around multiples of $25,000.
+
+Otherwise we don't see evidence of increasing of decreasing standard deviations.
+
+Normality: The Q-Q plot shows the residuals are pretty close to normal.
+
+Independence: We will assume independence between observations.
+
+
+We will now make our predictions.
+```{r predict salary}
+compset_noSal = read.csv(file.choose()) #CaseStudy2COmpSet No Salary
+head(compset_noSal)
+
+for(i in 1:ncol(compset_noSal)){
+  if (sapply(compset_noSal, class)[i] == "character"){
+    compset_noSal[,i] = as.factor(compset_noSal[,i])
+  }
+}
+
+compset_noSal$Education = as.factor(compset_noSal$Education)
+compset_noSal$JobLevel = as.factor(compset_noSal$JobLevel)
+
+comppreds = predict(fit9, newdata=compset_noSal)
+
+write.csv(comppreds, "Case2PredictionsEndler Salary.csv", row.names=FALSE)
+```
+
+
+Find insights about specific job roles
+```{r insights}
+head(work_data2)
+
+work_data2 %>% group_by(JobRole) %>% summarize(
+  meanAge = mean(Age),
+  modeBusinessTravel = getmode(BusinessTravel),
+  modeDept = getmode(Department),
+  meanDistanceFromHome = mean(DistanceFromHome),
+  meanEd = mean(Education),
+  meanEnvSat = mean(EnvironmentSatisfaction),
+  modeGender = getmode(Gender),
+  meanHourly = mean(HourlyRate),
+  meanJobInvolvement = mean(JobInvolvement),
+  meanJobSat = mean(JobSatisfaction),
+  modeMarital = getmode(MaritalStatus),
+  meanCompaniesWorked = mean(NumCompaniesWorked),
+  modeOvertime = getmode(OverTime),
+  meanPercentSalaryHike = mean(PercentSalaryHike),
+  meanPerfRating = mean(PerformanceRating),
+  meanRelationshipSat = mean(RelationshipSatisfaction),
+  meanStandardHours = mean(StandardHours),
+  modeStock = getmode(StockOptionLevel),
+  meanWorkingYears = mean(TotalWorkingYears),
+  meanTrainings = mean(TrainingTimesLastYear),
+  meanWorkLife = mean(WorkLifeBalance),
+  meanYearsAtCo = mean(YearsAtCompany),
+  meanYearsinRole = mean(YearsInCurrentRole),
+  meanYearsSincePromo = mean(YearsSinceLastPromotion),
+  meanYearsWithMan = mean(YearsWithCurrManager)
+)
+```
+Manufacturing Directors have the most environment satisfaction on average, while Research Directors have the lowest.
+
+Research Directors have the highest education on average.
+Most Sales Reps are single, while most people in every other position are married.
+
+Human Resources have the highest relationship satisfaction and highest work life balance score.
+
+Healthcare Reps have the highest job satisfaction. Research Directors have the lowest.
+
+```{r insights2}
+#visualize departments and job roles
+work_data2 %>% group_by(JobRole, Department) %>% summarize(Pop = length(JobRole))
+
+work_data2 %>% group_by(JobRole, Department) %>% summarize(Pop = length(JobRole)) %>% ggplot(aes(x=JobRole, y=Pop, fill=Department, label=Pop)) +
+  geom_bar(stat="identity") +
+  geom_text(nudge_y = 10) +
+  coord_flip() +
+  ggtitle("Employees by Role") +
+  xlab("Role") +
+  ylab("Number of Employees")
+
+```
+
+Here we see the number of employees in each role, colored by department.
+
+```{r insights 3}
+
+#jobsat
+work_data2 %>% group_by(JobRole) %>% summarize(meanJobSat=mean(JobSatisfaction)) %>% ggplot(aes(x=JobRole, y=meanJobSat, fill=JobRole, label=round(meanJobSat, 2))) + 
+  geom_bar(stat="identity") + 
+  theme(axis.text.x = element_text(angle = 90)) + 
+  geom_text(position=position_dodge(0.5), vjust=-0.25) +
+  ggtitle("Average Job Satisfaction by Role") +
+  ylab("Mean Job Satisfaction") +
+  xlab("Role")
+
+#envsat
+work_data2 %>% group_by(JobRole) %>% summarize(meanEnvSat=mean(EnvironmentSatisfaction)) %>% ggplot(aes(x=JobRole, y=meanEnvSat, fill=JobRole, label=round(meanEnvSat, 2))) + 
+  geom_bar(stat="identity") + 
+  theme(axis.text.x = element_text(angle = 90)) + 
+  geom_text(position=position_dodge(0.5), vjust=-0.25) +
+  ggtitle("Average Environment Satisfaction by Role") +
+  ylab("Mean Environment Satisfaction") +
+  xlab("Role")
+
+#job involvement
+work_data2 %>% group_by(JobRole) %>% summarize(meanJobInv=mean(JobInvolvement)) %>% ggplot(aes(x=JobRole, y=meanJobInv, fill=JobRole, label=round(meanJobInv, 2))) + 
+  geom_bar(stat="identity") + 
+  theme(axis.text.x = element_text(angle = 90)) + 
+  geom_text(position=position_dodge(0.5), vjust=-0.25) +
+  ggtitle("Average Job Involvement by Role") +
+  ylab("Mean Job Involvement") +
+  xlab("Role")
+
+work_data2 %>% group_by(JobRole) %>% summarize(meanWorkLife=mean(WorkLifeBalance)) %>% ggplot(aes(x=JobRole, y=meanWorkLife, fill=JobRole, label=round(meanWorkLife, 2))) + 
+  geom_bar(stat="identity") + 
+  theme(axis.text.x = element_text(angle = 90)) + 
+  geom_text(position=position_dodge(0.5), vjust=-0.25) +
+  ggtitle("Average Work-Life Balance Rating by Role") +
+  ylab("Mean Work-Life Balance Rating") +
+  xlab("Role")
+```
+
+Here we see average job involvement, job satisfaction, and environment satisfaction by job role. Notably, research directors have the lowest job and environment satisfaction, and the highest job involvement.
+
+We were tasked with finding a model to predict attrition, a model to predict monthly salary, and insights on job role trends. We attempted to create these models using KNN and Naive Bayes, and Multiple Linear Regression. Ultimately, the Naive Bayes Model performed the best in regards to predicting attrition. The multiple linear regression model was used to predict monthly salary. Most notably, we found that research directors are least satisfied with their jobs and environments and most involved with their jobs.
