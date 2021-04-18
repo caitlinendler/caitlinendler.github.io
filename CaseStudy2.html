@@ -308,8 +308,6 @@ $(document).ready(function () {
 
 </div>
 
-<p><a href = "https://www.youtube.com/watch?v=O2vDy5_mqRU&ab_channel=CaitlinEndler">Case Study 2 Presentation</a></p>
-</div>
 
 <p>DDSAnalytics has asked us to create a model to predict attrition and to find insights related to job roles. We have also been asked to create a model to predict salary. We will use KNN, Naive Bayes, and Multiple Linear Regression to build these models.</p>
 <pre class="r"><code>#import the data
@@ -359,99 +357,48 @@ head(data)</code></pre>
 ##  $ YearsSinceLastPromotion : int  0 4 2 5 1 1 0 0 0 7 ...
 ##  $ YearsWithCurrManager    : int  3 9 2 7 3 7 3 0 0 7 ...</code></pre>
 <pre class="r"><code>summary(data)</code></pre>
-<pre><code>##        ID             Age         Attrition         BusinessTravel    
-##  Min.   :  1.0   Min.   :18.00   Length:870         Length:870        
-##  1st Qu.:218.2   1st Qu.:30.00   Class :character   Class :character  
-##  Median :435.5   Median :35.00   Mode  :character   Mode  :character  
-##  Mean   :435.5   Mean   :36.83                                        
-##  3rd Qu.:652.8   3rd Qu.:43.00                                        
-##  Max.   :870.0   Max.   :60.00                                        
-##    DailyRate       Department        DistanceFromHome   Education    
-##  Min.   : 103.0   Length:870         Min.   : 1.000   Min.   :1.000  
-##  1st Qu.: 472.5   Class :character   1st Qu.: 2.000   1st Qu.:2.000  
-##  Median : 817.5   Mode  :character   Median : 7.000   Median :3.000  
-##  Mean   : 815.2                      Mean   : 9.339   Mean   :2.901  
-##  3rd Qu.:1165.8                      3rd Qu.:14.000   3rd Qu.:4.000  
-##  Max.   :1499.0                      Max.   :29.000   Max.   :5.000  
-##  EducationField     EmployeeCount EmployeeNumber   EnvironmentSatisfaction
-##  Length:870         Min.   :1     Min.   :   1.0   Min.   :1.000          
-##  Class :character   1st Qu.:1     1st Qu.: 477.2   1st Qu.:2.000          
-##  Mode  :character   Median :1     Median :1039.0   Median :3.000          
-##                     Mean   :1     Mean   :1029.8   Mean   :2.701          
-##                     3rd Qu.:1     3rd Qu.:1561.5   3rd Qu.:4.000          
-##                     Max.   :1     Max.   :2064.0   Max.   :4.000          
-##     Gender            HourlyRate     JobInvolvement     JobLevel    
-##  Length:870         Min.   : 30.00   Min.   :1.000   Min.   :1.000  
-##  Class :character   1st Qu.: 48.00   1st Qu.:2.000   1st Qu.:1.000  
-##  Mode  :character   Median : 66.00   Median :3.000   Median :2.000  
-##                     Mean   : 65.61   Mean   :2.723   Mean   :2.039  
-##                     3rd Qu.: 83.00   3rd Qu.:3.000   3rd Qu.:3.000  
-##                     Max.   :100.00   Max.   :4.000   Max.   :5.000  
-##    JobRole          JobSatisfaction MaritalStatus      MonthlyIncome  
-##  Length:870         Min.   :1.000   Length:870         Min.   : 1081  
-##  Class :character   1st Qu.:2.000   Class :character   1st Qu.: 2840  
-##  Mode  :character   Median :3.000   Mode  :character   Median : 4946  
-##                     Mean   :2.709                      Mean   : 6390  
-##                     3rd Qu.:4.000                      3rd Qu.: 8182  
-##                     Max.   :4.000                      Max.   :19999  
-##   MonthlyRate    NumCompaniesWorked    Over18            OverTime        
-##  Min.   : 2094   Min.   :0.000      Length:870         Length:870        
-##  1st Qu.: 8092   1st Qu.:1.000      Class :character   Class :character  
-##  Median :14074   Median :2.000      Mode  :character   Mode  :character  
-##  Mean   :14326   Mean   :2.728                                           
-##  3rd Qu.:20456   3rd Qu.:4.000                                           
-##  Max.   :26997   Max.   :9.000                                           
-##  PercentSalaryHike PerformanceRating RelationshipSatisfaction StandardHours
-##  Min.   :11.0      Min.   :3.000     Min.   :1.000            Min.   :80   
-##  1st Qu.:12.0      1st Qu.:3.000     1st Qu.:2.000            1st Qu.:80   
-##  Median :14.0      Median :3.000     Median :3.000            Median :80   
-##  Mean   :15.2      Mean   :3.152     Mean   :2.707            Mean   :80   
-##  3rd Qu.:18.0      3rd Qu.:3.000     3rd Qu.:4.000            3rd Qu.:80   
-##  Max.   :25.0      Max.   :4.000     Max.   :4.000            Max.   :80   
-##  StockOptionLevel TotalWorkingYears TrainingTimesLastYear WorkLifeBalance
-##  Min.   :0.0000   Min.   : 0.00     Min.   :0.000         Min.   :1.000  
-##  1st Qu.:0.0000   1st Qu.: 6.00     1st Qu.:2.000         1st Qu.:2.000  
-##  Median :1.0000   Median :10.00     Median :3.000         Median :3.000  
-##  Mean   :0.7839   Mean   :11.05     Mean   :2.832         Mean   :2.782  
-##  3rd Qu.:1.0000   3rd Qu.:15.00     3rd Qu.:3.000         3rd Qu.:3.000  
-##  Max.   :3.0000   Max.   :40.00     Max.   :6.000         Max.   :4.000  
-##  YearsAtCompany   YearsInCurrentRole YearsSinceLastPromotion
-##  Min.   : 0.000   Min.   : 0.000     Min.   : 0.000         
-##  1st Qu.: 3.000   1st Qu.: 2.000     1st Qu.: 0.000         
-##  Median : 5.000   Median : 3.000     Median : 1.000         
-##  Mean   : 6.962   Mean   : 4.205     Mean   : 2.169         
-##  3rd Qu.:10.000   3rd Qu.: 7.000     3rd Qu.: 3.000         
-##  Max.   :40.000   Max.   :18.000     Max.   :15.000         
-##  YearsWithCurrManager
-##  Min.   : 0.00       
-##  1st Qu.: 2.00       
-##  Median : 3.00       
-##  Mean   : 4.14       
-##  3rd Qu.: 7.00       
-##  Max.   :17.00</code></pre>
-<pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>## -- Attaching packages --------------------------------------- tidyverse 1.3.0 --</code></pre>
-<pre><code>## v ggplot2 3.3.3     v purrr   0.3.4
-## v tibble  3.0.4     v dplyr   1.0.2
-## v tidyr   1.1.2     v stringr 1.4.0
-## v readr   1.4.0     v forcats 0.5.0</code></pre>
-<pre><code>## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
-## x dplyr::filter() masks stats::filter()
-## x dplyr::lag()    masks stats::lag()</code></pre>
-<pre class="r"><code>library(caret)</code></pre>
-<pre><code>## Loading required package: lattice</code></pre>
-<pre><code>## 
-## Attaching package: &#39;caret&#39;</code></pre>
-<pre><code>## The following object is masked from &#39;package:purrr&#39;:
-## 
-##     lift</code></pre>
-<pre class="r"><code>library(e1071)
+<pre><code>##        ID             Age         Attrition         BusinessTravel       DailyRate       Department        DistanceFromHome
+##  Min.   :  1.0   Min.   :18.00   Length:870         Length:870         Min.   : 103.0   Length:870         Min.   : 1.000  
+##  1st Qu.:218.2   1st Qu.:30.00   Class :character   Class :character   1st Qu.: 472.5   Class :character   1st Qu.: 2.000  
+##  Median :435.5   Median :35.00   Mode  :character   Mode  :character   Median : 817.5   Mode  :character   Median : 7.000  
+##  Mean   :435.5   Mean   :36.83                                         Mean   : 815.2                      Mean   : 9.339  
+##  3rd Qu.:652.8   3rd Qu.:43.00                                         3rd Qu.:1165.8                      3rd Qu.:14.000  
+##  Max.   :870.0   Max.   :60.00                                         Max.   :1499.0                      Max.   :29.000  
+##    Education     EducationField     EmployeeCount EmployeeNumber   EnvironmentSatisfaction    Gender            HourlyRate    
+##  Min.   :1.000   Length:870         Min.   :1     Min.   :   1.0   Min.   :1.000           Length:870         Min.   : 30.00  
+##  1st Qu.:2.000   Class :character   1st Qu.:1     1st Qu.: 477.2   1st Qu.:2.000           Class :character   1st Qu.: 48.00  
+##  Median :3.000   Mode  :character   Median :1     Median :1039.0   Median :3.000           Mode  :character   Median : 66.00  
+##  Mean   :2.901                      Mean   :1     Mean   :1029.8   Mean   :2.701                              Mean   : 65.61  
+##  3rd Qu.:4.000                      3rd Qu.:1     3rd Qu.:1561.5   3rd Qu.:4.000                              3rd Qu.: 83.00  
+##  Max.   :5.000                      Max.   :1     Max.   :2064.0   Max.   :4.000                              Max.   :100.00  
+##  JobInvolvement     JobLevel       JobRole          JobSatisfaction MaritalStatus      MonthlyIncome    MonthlyRate    NumCompaniesWorked
+##  Min.   :1.000   Min.   :1.000   Length:870         Min.   :1.000   Length:870         Min.   : 1081   Min.   : 2094   Min.   :0.000     
+##  1st Qu.:2.000   1st Qu.:1.000   Class :character   1st Qu.:2.000   Class :character   1st Qu.: 2840   1st Qu.: 8092   1st Qu.:1.000     
+##  Median :3.000   Median :2.000   Mode  :character   Median :3.000   Mode  :character   Median : 4946   Median :14074   Median :2.000     
+##  Mean   :2.723   Mean   :2.039                      Mean   :2.709                      Mean   : 6390   Mean   :14326   Mean   :2.728     
+##  3rd Qu.:3.000   3rd Qu.:3.000                      3rd Qu.:4.000                      3rd Qu.: 8182   3rd Qu.:20456   3rd Qu.:4.000     
+##  Max.   :4.000   Max.   :5.000                      Max.   :4.000                      Max.   :19999   Max.   :26997   Max.   :9.000     
+##     Over18            OverTime         PercentSalaryHike PerformanceRating RelationshipSatisfaction StandardHours StockOptionLevel
+##  Length:870         Length:870         Min.   :11.0      Min.   :3.000     Min.   :1.000            Min.   :80    Min.   :0.0000  
+##  Class :character   Class :character   1st Qu.:12.0      1st Qu.:3.000     1st Qu.:2.000            1st Qu.:80    1st Qu.:0.0000  
+##  Mode  :character   Mode  :character   Median :14.0      Median :3.000     Median :3.000            Median :80    Median :1.0000  
+##                                        Mean   :15.2      Mean   :3.152     Mean   :2.707            Mean   :80    Mean   :0.7839  
+##                                        3rd Qu.:18.0      3rd Qu.:3.000     3rd Qu.:4.000            3rd Qu.:80    3rd Qu.:1.0000  
+##                                        Max.   :25.0      Max.   :4.000     Max.   :4.000            Max.   :80    Max.   :3.0000  
+##  TotalWorkingYears TrainingTimesLastYear WorkLifeBalance YearsAtCompany   YearsInCurrentRole YearsSinceLastPromotion YearsWithCurrManager
+##  Min.   : 0.00     Min.   :0.000         Min.   :1.000   Min.   : 0.000   Min.   : 0.000     Min.   : 0.000          Min.   : 0.00       
+##  1st Qu.: 6.00     1st Qu.:2.000         1st Qu.:2.000   1st Qu.: 3.000   1st Qu.: 2.000     1st Qu.: 0.000          1st Qu.: 2.00       
+##  Median :10.00     Median :3.000         Median :3.000   Median : 5.000   Median : 3.000     Median : 1.000          Median : 3.00       
+##  Mean   :11.05     Mean   :2.832         Mean   :2.782   Mean   : 6.962   Mean   : 4.205     Mean   : 2.169          Mean   : 4.14       
+##  3rd Qu.:15.00     3rd Qu.:3.000         3rd Qu.:3.000   3rd Qu.:10.000   3rd Qu.: 7.000     3rd Qu.: 3.000          3rd Qu.: 7.00       
+##  Max.   :40.00     Max.   :6.000         Max.   :4.000   Max.   :40.000   Max.   :18.000     Max.   :15.000          Max.   :17.00</code></pre>
+<pre class="r"><code>library(tidyverse)
+library(caret)
+library(e1071)
 library(class)
-library(GGally)</code></pre>
-<pre><code>## Registered S3 method overwritten by &#39;GGally&#39;:
-##   method from   
-##   +.gg   ggplot2</code></pre>
-<pre class="r"><code># Create mode function.
+library(GGally)
+
+# Create mode function.
 getmode &lt;- function(v) {
    uniqv &lt;- unique(v)
    uniqv[which.max(tabulate(match(v, uniqv)))]
@@ -517,30 +464,22 @@ for(i in 1:ncol(data)){
   }
 
 sapply(data, class)</code></pre>
-<pre><code>##                       ID                      Age                Attrition 
-##                &quot;numeric&quot;                &quot;numeric&quot;                &quot;numeric&quot; 
-##           BusinessTravel                DailyRate               Department 
-##                &quot;numeric&quot;                &quot;numeric&quot;                &quot;numeric&quot; 
-##         DistanceFromHome                Education           EducationField 
-##                &quot;numeric&quot;                &quot;numeric&quot;                &quot;numeric&quot; 
-##            EmployeeCount           EmployeeNumber  EnvironmentSatisfaction 
-##                &quot;numeric&quot;                &quot;numeric&quot;                &quot;numeric&quot; 
-##                   Gender               HourlyRate           JobInvolvement 
-##                &quot;numeric&quot;                &quot;numeric&quot;                &quot;numeric&quot; 
-##                 JobLevel                  JobRole          JobSatisfaction 
-##                &quot;numeric&quot;                &quot;numeric&quot;                &quot;numeric&quot; 
-##            MaritalStatus            MonthlyIncome              MonthlyRate 
-##                &quot;numeric&quot;                &quot;numeric&quot;                &quot;numeric&quot; 
-##       NumCompaniesWorked                   Over18                 OverTime 
-##                &quot;numeric&quot;                &quot;numeric&quot;                &quot;numeric&quot; 
-##        PercentSalaryHike        PerformanceRating RelationshipSatisfaction 
-##                &quot;numeric&quot;                &quot;numeric&quot;                &quot;numeric&quot; 
-##            StandardHours         StockOptionLevel        TotalWorkingYears 
-##                &quot;numeric&quot;                &quot;numeric&quot;                &quot;numeric&quot; 
-##    TrainingTimesLastYear          WorkLifeBalance           YearsAtCompany 
-##                &quot;numeric&quot;                &quot;numeric&quot;                &quot;numeric&quot; 
-##       YearsInCurrentRole  YearsSinceLastPromotion     YearsWithCurrManager 
-##                &quot;numeric&quot;                &quot;numeric&quot;                &quot;numeric&quot;</code></pre>
+<pre><code>##                       ID                      Age                Attrition           BusinessTravel                DailyRate 
+##                &quot;numeric&quot;                &quot;numeric&quot;                &quot;numeric&quot;                &quot;numeric&quot;                &quot;numeric&quot; 
+##               Department         DistanceFromHome                Education           EducationField            EmployeeCount 
+##                &quot;numeric&quot;                &quot;numeric&quot;                &quot;numeric&quot;                &quot;numeric&quot;                &quot;numeric&quot; 
+##           EmployeeNumber  EnvironmentSatisfaction                   Gender               HourlyRate           JobInvolvement 
+##                &quot;numeric&quot;                &quot;numeric&quot;                &quot;numeric&quot;                &quot;numeric&quot;                &quot;numeric&quot; 
+##                 JobLevel                  JobRole          JobSatisfaction            MaritalStatus            MonthlyIncome 
+##                &quot;numeric&quot;                &quot;numeric&quot;                &quot;numeric&quot;                &quot;numeric&quot;                &quot;numeric&quot; 
+##              MonthlyRate       NumCompaniesWorked                   Over18                 OverTime        PercentSalaryHike 
+##                &quot;numeric&quot;                &quot;numeric&quot;                &quot;numeric&quot;                &quot;numeric&quot;                &quot;numeric&quot; 
+##        PerformanceRating RelationshipSatisfaction            StandardHours         StockOptionLevel        TotalWorkingYears 
+##                &quot;numeric&quot;                &quot;numeric&quot;                &quot;numeric&quot;                &quot;numeric&quot;                &quot;numeric&quot; 
+##    TrainingTimesLastYear          WorkLifeBalance           YearsAtCompany       YearsInCurrentRole  YearsSinceLastPromotion 
+##                &quot;numeric&quot;                &quot;numeric&quot;                &quot;numeric&quot;                &quot;numeric&quot;                &quot;numeric&quot; 
+##     YearsWithCurrManager 
+##                &quot;numeric&quot;</code></pre>
 <p>KNN</p>
 <pre class="r"><code>#use only most apparently relevant data
 data2 = data %&gt;% select(YearsWithCurrManager, YearsInCurrentRole, YearsAtCompany, TotalWorkingYears, StockOptionLevel, OverTime, NumCompaniesWorked, MaritalStatus, JobSatisfaction, JobInvolvement, Age, Attrition)
@@ -685,7 +624,7 @@ plot(seq(1,numks,1),MeanSpec, type = &quot;l&quot;)</code></pre>
 <pre class="r"><code>which.max(MeanSpec)</code></pre>
 <pre><code>## [1] 2</code></pre>
 <pre class="r"><code>max(MeanSpec)</code></pre>
-<pre><code>## [1] 0.2866638</code></pre>
+<pre><code>## [1] 0.3115981</code></pre>
 <p>NAIVE BAYES</p>
 <pre class="r"><code>#data3 is our scaled data from a couple chunks back
 #data3 = data[,-c(1,10,23,28)]
@@ -818,49 +757,44 @@ confusionMatrix(table(classifications,test$Attrition)) </code></pre>
 ## 
 ##                
 ## classifications   1   2
-##               1 189  22
-##               2  33  17
+##               1 187  27
+##               2  32  15
 ##                                           
-##                Accuracy : 0.7893          
-##                  95% CI : (0.7347, 0.8371)
-##     No Information Rate : 0.8506          
-##     P-Value [Acc &gt; NIR] : 0.9970          
+##                Accuracy : 0.7739          
+##                  95% CI : (0.7183, 0.8232)
+##     No Information Rate : 0.8391          
+##     P-Value [Acc &gt; NIR] : 0.9976          
 ##                                           
-##                   Kappa : 0.2573          
+##                   Kappa : 0.2013          
 ##                                           
-##  Mcnemar&#39;s Test P-Value : 0.1775          
+##  Mcnemar&#39;s Test P-Value : 0.6025          
 ##                                           
-##             Sensitivity : 0.8514          
-##             Specificity : 0.4359          
-##          Pos Pred Value : 0.8957          
-##          Neg Pred Value : 0.3400          
-##              Prevalence : 0.8506          
-##          Detection Rate : 0.7241          
-##    Detection Prevalence : 0.8084          
-##       Balanced Accuracy : 0.6436          
+##             Sensitivity : 0.8539          
+##             Specificity : 0.3571          
+##          Pos Pred Value : 0.8738          
+##          Neg Pred Value : 0.3191          
+##              Prevalence : 0.8391          
+##          Detection Rate : 0.7165          
+##    Detection Prevalence : 0.8199          
+##       Balanced Accuracy : 0.6055          
 ##                                           
 ##        &#39;Positive&#39; Class : 1               
 ## </code></pre>
 <pre class="r"><code>model = naiveBayes(trainNB[,c(18,21,14,25,20)], trainNB$Attrition, laplace = 1)
 table(predict(model, testNB[,c(18,21,14,25,30)]), testNB$Attrition)</code></pre>
-<pre><code>## Warning in predict.naiveBayes(model, testNB[, c(18, 21, 14, 25, 30)]): Type
-## mismatch between training and new data for variable &#39;NumCompaniesWorked&#39;. Did
-## you use factors with numeric labels for training, and numeric values for new
-## data?</code></pre>
+<pre><code>## Warning in predict.naiveBayes(model, testNB[, c(18, 21, 14, 25, 30)]): Type mismatch between training and new data for variable
+## &#39;NumCompaniesWorked&#39;. Did you use factors with numeric labels for training, and numeric values for new data?</code></pre>
 <pre><code>##    
 ##       1   2
 ##   1 196  30
 ##   2  17  18</code></pre>
 <pre class="r"><code>CM = confusionMatrix(table(predict(model, testNB[,c(18,21)]), testNB$Attrition))</code></pre>
-<pre><code>## Warning in predict.naiveBayes(model, testNB[, c(18, 21)]): Type mismatch between
-## training and new data for variable &#39;JobLevel&#39;. Did you use factors with numeric
-## labels for training, and numeric values for new data?</code></pre>
-<pre><code>## Warning in predict.naiveBayes(model, testNB[, c(18, 21)]): Type mismatch between
-## training and new data for variable &#39;StockOptionLevel&#39;. Did you use factors with
-## numeric labels for training, and numeric values for new data?</code></pre>
-<pre><code>## Warning in predict.naiveBayes(model, testNB[, c(18, 21)]): Type mismatch between
-## training and new data for variable &#39;NumCompaniesWorked&#39;. Did you use factors
-## with numeric labels for training, and numeric values for new data?</code></pre>
+<pre><code>## Warning in predict.naiveBayes(model, testNB[, c(18, 21)]): Type mismatch between training and new data for variable &#39;JobLevel&#39;. Did you
+## use factors with numeric labels for training, and numeric values for new data?</code></pre>
+<pre><code>## Warning in predict.naiveBayes(model, testNB[, c(18, 21)]): Type mismatch between training and new data for variable &#39;StockOptionLevel&#39;.
+## Did you use factors with numeric labels for training, and numeric values for new data?</code></pre>
+<pre><code>## Warning in predict.naiveBayes(model, testNB[, c(18, 21)]): Type mismatch between training and new data for variable &#39;NumCompaniesWorked&#39;.
+## Did you use factors with numeric labels for training, and numeric values for new data?</code></pre>
 <pre class="r"><code>CM</code></pre>
 <pre><code>## Confusion Matrix and Statistics
 ## 
@@ -891,9 +825,9 @@ table(predict(model, testNB[,c(18,21,14,25,30)]), testNB$Attrition)</code></pre>
 ## </code></pre>
 <p>We are starting over and trying Huy’s suggestion.</p>
 <pre class="r"><code>#install.packages(&quot;Boruta&quot;)
-library(Boruta)</code></pre>
-<pre><code>## Warning: package &#39;Boruta&#39; was built under R version 4.0.5</code></pre>
-<pre class="r"><code>#import fresh data
+library(Boruta)
+
+#import fresh data
 work_data = read.csv(file.choose()) #CaseStudy2-data
 
 #make categorical variables factors
@@ -910,93 +844,53 @@ work_data$JobLevel = as.factor(work_data$JobLevel)
 #get rid of unneccessary columns: ID, EmployeeCount, Over18, StandardHours
 boruta.train = Boruta(Attrition~.-c(ID,EmployeeCount,Over18,StandardHours), data=work_data)
 print(boruta.train)</code></pre>
-<pre><code>## Boruta performed 99 iterations in 19.96975 secs.
-##  13 attributes confirmed important: Age, JobInvolvement, JobLevel,
-## JobRole, MaritalStatus and 8 more;
-##  18 attributes confirmed unimportant: BusinessTravel, DailyRate,
-## Department, DistanceFromHome, Education and 13 more;
-##  4 tentative attributes left: EnvironmentSatisfaction, JobSatisfaction,
-## NumCompaniesWorked, YearsSinceLastPromotion;</code></pre>
+<pre><code>## Boruta performed 99 iterations in 20.80148 secs.
+##  13 attributes confirmed important: Age, JobInvolvement, JobLevel, JobRole, MaritalStatus and 8 more;
+##  17 attributes confirmed unimportant: BusinessTravel, DailyRate, DistanceFromHome, Education, EducationField and 12 more;
+##  5 tentative attributes left: Department, EnvironmentSatisfaction, JobSatisfaction, NumCompaniesWorked,
+## YearsSinceLastPromotion;</code></pre>
 <pre class="r"><code>getSelectedAttributes(boruta.train, withTentative=F)</code></pre>
-<pre><code>##  [1] &quot;Age&quot;                  &quot;JobInvolvement&quot;       &quot;JobLevel&quot;            
-##  [4] &quot;JobRole&quot;              &quot;MaritalStatus&quot;        &quot;MonthlyIncome&quot;       
-##  [7] &quot;OverTime&quot;             &quot;StockOptionLevel&quot;     &quot;TotalWorkingYears&quot;   
-## [10] &quot;WorkLifeBalance&quot;      &quot;YearsAtCompany&quot;       &quot;YearsInCurrentRole&quot;  
-## [13] &quot;YearsWithCurrManager&quot;</code></pre>
+<pre><code>##  [1] &quot;Age&quot;                  &quot;JobInvolvement&quot;       &quot;JobLevel&quot;             &quot;JobRole&quot;              &quot;MaritalStatus&quot;       
+##  [6] &quot;MonthlyIncome&quot;        &quot;OverTime&quot;             &quot;StockOptionLevel&quot;     &quot;TotalWorkingYears&quot;    &quot;WorkLifeBalance&quot;     
+## [11] &quot;YearsAtCompany&quot;       &quot;YearsInCurrentRole&quot;   &quot;YearsWithCurrManager&quot;</code></pre>
 <pre class="r"><code>boruta.df = attStats(boruta.train)
 print(boruta.df)</code></pre>
-<pre><code>##                              meanImp   medianImp     minImp     maxImp
-## ID                        0.08980117 -0.21007407 -2.1105292  3.1275242
-## Age                       7.75942980  7.68268886  4.6886609 10.2542835
-## BusinessTravel            0.12205160  0.11825977 -1.3037194  1.3638664
-## DailyRate                -0.06698909  0.35356482 -1.5592716  1.3284903
-## Department                1.65368058  1.69265471  0.4468633  2.7701747
-## DistanceFromHome          1.13607729  0.96592491 -0.8486642  2.9237086
-## Education                 0.05896591  0.16838046 -2.4393485  2.0091980
-## EducationField            1.08316249  1.08953657 -0.7539198  3.5347429
-## EmployeeCount             0.00000000  0.00000000  0.0000000  0.0000000
-## EmployeeNumber           -0.38260353 -0.31554834 -1.8785122  1.8917193
-## EnvironmentSatisfaction   2.08085073  2.08548642 -0.2208223  4.7020698
-## Gender                   -0.08354339  0.04180366 -0.8912472  0.9279004
-## HourlyRate               -0.92382484 -1.09837239 -2.4277894  0.8447272
-## JobInvolvement            7.17270869  7.11386835  4.3906824  9.7281376
-## JobLevel                  6.28391472  6.33117346  4.3877269  8.5159999
-## JobRole                   6.02762321  6.11616998  3.1536613  8.3286361
-## JobSatisfaction           2.51995580  2.54700046 -0.5036711  5.1999927
-## MaritalStatus             7.87648312  7.79256703  4.9601103 11.6492215
-## MonthlyIncome            10.62820820 10.72442402  7.8912425 14.3186310
-## MonthlyRate               0.04410048  0.32201411 -1.1870997  1.0879944
-## NumCompaniesWorked        3.02783272  3.04768794  0.1173404  5.3064722
-## Over18                    0.00000000  0.00000000  0.0000000  0.0000000
-## OverTime                 18.21430751 18.42322767 13.6371684 21.0173242
-## PercentSalaryHike         1.11358041  1.14887656 -0.3095612  2.1059125
-## PerformanceRating        -0.68895003 -0.84971695 -2.6588069  1.1925371
-## RelationshipSatisfaction  0.57917859  0.83961121 -2.2200659  2.3511539
-## StandardHours             0.00000000  0.00000000  0.0000000  0.0000000
-## StockOptionLevel          9.64024268  9.59497462  7.0316180 12.0652303
-## TotalWorkingYears         7.99447916  8.00749041  5.0518424 10.5642010
-## TrainingTimesLastYear    -0.30437514 -0.23191937 -1.7891718  0.9847096
-## WorkLifeBalance           3.25944423  3.28750161  0.1004614  6.4475082
-## YearsAtCompany            6.94348795  7.00417255  4.7514789  9.2863230
-## YearsInCurrentRole        3.76612805  3.62618178  1.2442198  6.1929513
-## YearsSinceLastPromotion   1.88366761  1.84431420 -0.4701305  4.1665391
-## YearsWithCurrManager      5.60562263  5.59970034  1.8853945  8.1460892
-##                            normHits  decision
-## ID                       0.01010101  Rejected
-## Age                      1.00000000 Confirmed
-## BusinessTravel           0.00000000  Rejected
-## DailyRate                0.00000000  Rejected
-## Department               0.01010101  Rejected
-## DistanceFromHome         0.03030303  Rejected
-## Education                0.00000000  Rejected
-## EducationField           0.01010101  Rejected
-## EmployeeCount            0.00000000  Rejected
-## EmployeeNumber           0.00000000  Rejected
-## EnvironmentSatisfaction  0.34343434 Tentative
-## Gender                   0.00000000  Rejected
-## HourlyRate               0.00000000  Rejected
-## JobInvolvement           1.00000000 Confirmed
-## JobLevel                 1.00000000 Confirmed
-## JobRole                  0.97979798 Confirmed
-## JobSatisfaction          0.44444444 Tentative
-## MaritalStatus            1.00000000 Confirmed
-## MonthlyIncome            1.00000000 Confirmed
-## MonthlyRate              0.00000000  Rejected
-## NumCompaniesWorked       0.63636364 Tentative
-## Over18                   0.00000000  Rejected
-## OverTime                 1.00000000 Confirmed
-## PercentSalaryHike        0.00000000  Rejected
-## PerformanceRating        0.00000000  Rejected
-## RelationshipSatisfaction 0.01010101  Rejected
-## StandardHours            0.00000000  Rejected
-## StockOptionLevel         1.00000000 Confirmed
-## TotalWorkingYears        1.00000000 Confirmed
-## TrainingTimesLastYear    0.00000000  Rejected
-## WorkLifeBalance          0.70707071 Confirmed
-## YearsAtCompany           1.00000000 Confirmed
-## YearsInCurrentRole       0.80808081 Confirmed
-## YearsSinceLastPromotion  0.35353535 Tentative
-## YearsWithCurrManager     0.97979798 Confirmed</code></pre>
+<pre><code>##                              meanImp   medianImp     minImp     maxImp   normHits  decision
+## ID                        0.19602110  0.01850470 -2.1105292  3.1275242 0.01010101  Rejected
+## Age                       8.00837103  7.98966685  4.6886609 10.5554817 1.00000000 Confirmed
+## BusinessTravel            0.16746539  0.11825977 -1.3037194  1.3638664 0.00000000  Rejected
+## DailyRate                 0.04785456  0.35356482 -1.5592716  1.3284903 0.00000000  Rejected
+## Department                2.92267600  2.84891129  0.4468633  5.0392381 0.62626263 Tentative
+## DistanceFromHome          0.99440765  0.80668241 -1.1515799  2.9237086 0.02020202  Rejected
+## Education                -0.04758534 -0.05722498 -2.4393485  2.0091980 0.00000000  Rejected
+## EducationField            1.09335207  1.08953657 -0.7539198  3.5347429 0.01010101  Rejected
+## EmployeeCount             0.00000000  0.00000000  0.0000000  0.0000000 0.00000000  Rejected
+## EmployeeNumber           -0.22422533  0.03751958 -1.8785122  1.8917193 0.00000000  Rejected
+## EnvironmentSatisfaction   1.95531748  2.05501056 -1.1152935  4.1408918 0.34343434 Tentative
+## Gender                   -0.18099620  0.04180366 -1.8116056  0.9279004 0.00000000  Rejected
+## HourlyRate               -0.89843938 -1.09837239 -2.4277894  0.8447272 0.00000000  Rejected
+## JobInvolvement            6.89235008  6.88481429  4.1604728  9.7281376 1.00000000 Confirmed
+## JobLevel                  6.90209554  7.01788077  4.8169218  9.2291242 1.00000000 Confirmed
+## JobRole                   6.06173901  6.06159700  3.1536613  9.6748638 0.97979798 Confirmed
+## JobSatisfaction           2.43212306  2.29020022 -0.5430147  5.2552376 0.46464646 Tentative
+## MaritalStatus             7.95988587  7.96741005  5.6179105 10.1703061 1.00000000 Confirmed
+## MonthlyIncome            11.22244762 11.32541945  7.4805141 14.4440249 1.00000000 Confirmed
+## MonthlyRate              -0.15533352  0.32201411 -3.1497356  1.0879944 0.00000000  Rejected
+## NumCompaniesWorked        2.81173182  2.91330063  0.1173404  6.9639550 0.57575758 Tentative
+## Over18                    0.00000000  0.00000000  0.0000000  0.0000000 0.00000000  Rejected
+## OverTime                 18.86124278 19.20933109 13.6371684 21.6285252 1.00000000 Confirmed
+## PercentSalaryHike         1.24630359  1.22633138  0.5023693  2.1059125 0.00000000  Rejected
+## PerformanceRating        -0.64753729 -0.84971695 -2.6588069  1.1925371 0.00000000  Rejected
+## RelationshipSatisfaction  0.76269033  0.97297901 -2.2200659  3.1392915 0.02020202  Rejected
+## StandardHours             0.00000000  0.00000000  0.0000000  0.0000000 0.00000000  Rejected
+## StockOptionLevel          9.66155145  9.73084036  7.4751187 11.4064528 1.00000000 Confirmed
+## TotalWorkingYears         8.25482792  8.31967304  5.1941729 10.2642310 1.00000000 Confirmed
+## TrainingTimesLastYear    -0.29141485 -0.23191937 -1.7891718  0.9847096 0.00000000  Rejected
+## WorkLifeBalance           3.68262161  3.58848606  1.0965083  6.3002497 0.78787879 Confirmed
+## YearsAtCompany            7.23494647  7.31898979  4.7514789 10.0950135 1.00000000 Confirmed
+## YearsInCurrentRole        3.98060342  3.78130725  1.7551747  6.9196202 0.83838384 Confirmed
+## YearsSinceLastPromotion   2.22411080  2.24879203 -0.1830495  4.3387477 0.41414141 Tentative
+## YearsWithCurrManager      5.66366814  5.73912450  3.2319547  8.2186676 0.98989899 Confirmed</code></pre>
 <p>KNN</p>
 <pre class="r"><code>#make factors numerical
 for(i in 1:ncol(work_data)){
@@ -1028,26 +922,26 @@ confusionMatrix(table(classifications,work_test$Attrition)) </code></pre>
 ## 
 ##                     
 ## classifications      -0.437676117913082 2.28216832911821
-##   -0.437676117913082                212               34
-##   2.28216832911821                    8                7
+##   -0.437676117913082                213               30
+##   2.28216832911821                    8               10
 ##                                             
-##                Accuracy : 0.8391            
-##                  95% CI : (0.7888, 0.8815)  
-##     No Information Rate : 0.8429            
-##     P-Value [Acc &gt; NIR] : 0.6076663         
+##                Accuracy : 0.8544            
+##                  95% CI : (0.8057, 0.8949)  
+##     No Information Rate : 0.8467            
+##     P-Value [Acc &gt; NIR] : 0.4055658         
 ##                                             
-##                   Kappa : 0.1811            
+##                   Kappa : 0.276             
 ##                                             
-##  Mcnemar&#39;s Test P-Value : 0.0001145         
+##  Mcnemar&#39;s Test P-Value : 0.0006577         
 ##                                             
-##             Sensitivity : 0.9636            
-##             Specificity : 0.1707            
-##          Pos Pred Value : 0.8618            
-##          Neg Pred Value : 0.4667            
-##              Prevalence : 0.8429            
-##          Detection Rate : 0.8123            
-##    Detection Prevalence : 0.9425            
-##       Balanced Accuracy : 0.5672            
+##             Sensitivity : 0.9638            
+##             Specificity : 0.2500            
+##          Pos Pred Value : 0.8765            
+##          Neg Pred Value : 0.5556            
+##              Prevalence : 0.8467            
+##          Detection Rate : 0.8161            
+##    Detection Prevalence : 0.9310            
+##       Balanced Accuracy : 0.6069            
 ##                                             
 ##        &#39;Positive&#39; Class : -0.437676117913082
 ## </code></pre>
@@ -1205,93 +1099,53 @@ work_data2$JobLevel = as.factor(work_data2$JobLevel)
 #get rid of unneccessary columns: ID, EmployeeCount, Over18, StandardHours
 boruta.train = Boruta(MonthlyIncome~.-c(ID,EmployeeCount,Over18,StandardHours), data=work_data2)
 print(boruta.train)</code></pre>
-<pre><code>## Boruta performed 99 iterations in 23.52827 secs.
-##  12 attributes confirmed important: Age, Attrition, Department,
-## Education, JobLevel and 7 more;
-##  22 attributes confirmed unimportant: DailyRate, DistanceFromHome,
-## EducationField, EmployeeCount, EmployeeNumber and 17 more;
+<pre><code>## Boruta performed 99 iterations in 22.63516 secs.
+##  12 attributes confirmed important: Age, Attrition, Department, Education, JobLevel and 7 more;
+##  22 attributes confirmed unimportant: DailyRate, DistanceFromHome, EducationField, EmployeeCount, EmployeeNumber and 17
+## more;
 ##  1 tentative attributes left: BusinessTravel;</code></pre>
 <pre class="r"><code>getSelectedAttributes(boruta.train, withTentative=F)</code></pre>
-<pre><code>##  [1] &quot;Age&quot;                     &quot;Attrition&quot;              
-##  [3] &quot;Department&quot;              &quot;Education&quot;              
-##  [5] &quot;JobLevel&quot;                &quot;JobRole&quot;                
-##  [7] &quot;NumCompaniesWorked&quot;      &quot;TotalWorkingYears&quot;      
-##  [9] &quot;YearsAtCompany&quot;          &quot;YearsInCurrentRole&quot;     
+<pre><code>##  [1] &quot;Age&quot;                     &quot;Attrition&quot;               &quot;Department&quot;              &quot;Education&quot;               &quot;JobLevel&quot;               
+##  [6] &quot;JobRole&quot;                 &quot;NumCompaniesWorked&quot;      &quot;TotalWorkingYears&quot;       &quot;YearsAtCompany&quot;          &quot;YearsInCurrentRole&quot;     
 ## [11] &quot;YearsSinceLastPromotion&quot; &quot;YearsWithCurrManager&quot;</code></pre>
 <pre class="r"><code>boruta.df = attStats(boruta.train)
 print(boruta.df)</code></pre>
-<pre><code>##                              meanImp   medianImp     minImp     maxImp
-## ID                        0.11551586  0.01581657 -1.6903743  2.1646141
-## Age                      12.68517901 12.71552040 10.9863570 14.1535996
-## Attrition                 3.81794018  3.80564145  1.4454547  5.6743002
-## BusinessTravel            1.96816410  2.08030831 -0.8897753  4.7793100
-## DailyRate                -1.52618017 -1.79383070 -2.5946899  0.9248151
-## Department                6.41610437  6.29186013  5.1785078  8.1795386
-## DistanceFromHome          0.41734986  0.49758919 -1.6381730  2.6962946
-## Education                 3.03717956  3.09173656  0.9422391  4.8841547
-## EducationField            0.62873819  0.34172277 -0.1095353  2.1883005
-## EmployeeCount             0.00000000  0.00000000  0.0000000  0.0000000
-## EmployeeNumber           -0.54880842 -0.24242564 -2.3265594  0.6049094
-## EnvironmentSatisfaction   0.65362675  0.66488982 -0.7527816  2.0767240
-## Gender                    0.14677902  0.46938199 -1.3532984  1.9553132
-## HourlyRate               -0.36353963 -0.36513426 -1.6534333  0.8964609
-## JobInvolvement           -0.63964181 -0.61741130 -2.1643430  0.7918076
-## JobLevel                 41.55387168 42.51421838 32.0385236 44.8436155
-## JobRole                  14.85434988 14.91062183 12.2964067 17.5490285
-## JobSatisfaction          -0.49624605 -0.58322432 -1.9300691  1.1300784
-## MaritalStatus            -0.01292736  0.01183241 -1.0948991  1.5668815
-## MonthlyRate               0.56434629  0.43273184 -0.7646806  1.8254406
-## NumCompaniesWorked        7.89745065  7.93472277  6.1959024  9.3080324
-## Over18                    0.00000000  0.00000000  0.0000000  0.0000000
-## OverTime                 -0.32379826 -0.29264617 -1.7085356  0.5193743
-## PercentSalaryHike        -0.50772436 -0.39353423 -2.3846306  0.7984981
-## PerformanceRating        -0.31808044 -0.42223440 -1.6259414  1.2989319
-## RelationshipSatisfaction -0.24846688 -0.17118946 -2.2359178  1.8829568
-## StandardHours             0.00000000  0.00000000  0.0000000  0.0000000
-## StockOptionLevel         -0.13858964 -0.27915163 -1.3313000  1.3612956
-## TotalWorkingYears        23.43228145 23.35669874 21.2223486 25.4774469
-## TrainingTimesLastYear    -0.17898195 -0.12674522 -1.4561717  1.1000387
-## WorkLifeBalance          -0.72651564 -0.66976520 -3.3129813  1.3362916
-## YearsAtCompany           12.65615308 12.65593989 10.4696417 14.5832833
-## YearsInCurrentRole        8.78509322  8.74225425  7.1264702 11.4225586
-## YearsSinceLastPromotion   4.20847203  4.11762036  2.2716190  6.5677041
-## YearsWithCurrManager      7.06439087  7.05874287  5.0921357  9.0321690
-##                            normHits  decision
-## ID                       0.02020202  Rejected
-## Age                      1.00000000 Confirmed
-## Attrition                0.91919192 Confirmed
-## BusinessTravel           0.50505051 Tentative
-## DailyRate                0.00000000  Rejected
-## Department               1.00000000 Confirmed
-## DistanceFromHome         0.02020202  Rejected
-## Education                0.78787879 Confirmed
-## EducationField           0.00000000  Rejected
-## EmployeeCount            0.00000000  Rejected
-## EmployeeNumber           0.00000000  Rejected
-## EnvironmentSatisfaction  0.02020202  Rejected
-## Gender                   0.00000000  Rejected
-## HourlyRate               0.00000000  Rejected
-## JobInvolvement           0.00000000  Rejected
-## JobLevel                 1.00000000 Confirmed
-## JobRole                  1.00000000 Confirmed
-## JobSatisfaction          0.00000000  Rejected
-## MaritalStatus            0.01010101  Rejected
-## MonthlyRate              0.00000000  Rejected
-## NumCompaniesWorked       1.00000000 Confirmed
-## Over18                   0.00000000  Rejected
-## OverTime                 0.00000000  Rejected
-## PercentSalaryHike        0.00000000  Rejected
-## PerformanceRating        0.00000000  Rejected
-## RelationshipSatisfaction 0.01010101  Rejected
-## StandardHours            0.00000000  Rejected
-## StockOptionLevel         0.00000000  Rejected
-## TotalWorkingYears        1.00000000 Confirmed
-## TrainingTimesLastYear    0.00000000  Rejected
-## WorkLifeBalance          0.00000000  Rejected
-## YearsAtCompany           1.00000000 Confirmed
-## YearsInCurrentRole       1.00000000 Confirmed
-## YearsSinceLastPromotion  0.96969697 Confirmed
-## YearsWithCurrManager     1.00000000 Confirmed</code></pre>
+<pre><code>##                              meanImp   medianImp     minImp     maxImp   normHits  decision
+## ID                        0.11551586  0.01581657 -1.6903743  2.1646141 0.02020202  Rejected
+## Age                      12.68517901 12.71552040 10.9863570 14.1535996 1.00000000 Confirmed
+## Attrition                 3.81794018  3.80564145  1.4454547  5.6743002 0.91919192 Confirmed
+## BusinessTravel            1.96816410  2.08030831 -0.8897753  4.7793100 0.50505051 Tentative
+## DailyRate                -1.52618017 -1.79383070 -2.5946899  0.9248151 0.00000000  Rejected
+## Department                6.41610437  6.29186013  5.1785078  8.1795386 1.00000000 Confirmed
+## DistanceFromHome          0.41734986  0.49758919 -1.6381730  2.6962946 0.02020202  Rejected
+## Education                 3.03717956  3.09173656  0.9422391  4.8841547 0.78787879 Confirmed
+## EducationField            0.62873819  0.34172277 -0.1095353  2.1883005 0.00000000  Rejected
+## EmployeeCount             0.00000000  0.00000000  0.0000000  0.0000000 0.00000000  Rejected
+## EmployeeNumber           -0.54880842 -0.24242564 -2.3265594  0.6049094 0.00000000  Rejected
+## EnvironmentSatisfaction   0.65362675  0.66488982 -0.7527816  2.0767240 0.02020202  Rejected
+## Gender                    0.14677902  0.46938199 -1.3532984  1.9553132 0.00000000  Rejected
+## HourlyRate               -0.36353963 -0.36513426 -1.6534333  0.8964609 0.00000000  Rejected
+## JobInvolvement           -0.63964181 -0.61741130 -2.1643430  0.7918076 0.00000000  Rejected
+## JobLevel                 41.55387168 42.51421838 32.0385236 44.8436155 1.00000000 Confirmed
+## JobRole                  14.85434988 14.91062183 12.2964067 17.5490285 1.00000000 Confirmed
+## JobSatisfaction          -0.49624605 -0.58322432 -1.9300691  1.1300784 0.00000000  Rejected
+## MaritalStatus            -0.01292736  0.01183241 -1.0948991  1.5668815 0.01010101  Rejected
+## MonthlyRate               0.56434629  0.43273184 -0.7646806  1.8254406 0.00000000  Rejected
+## NumCompaniesWorked        7.89745065  7.93472277  6.1959024  9.3080324 1.00000000 Confirmed
+## Over18                    0.00000000  0.00000000  0.0000000  0.0000000 0.00000000  Rejected
+## OverTime                 -0.32379826 -0.29264617 -1.7085356  0.5193743 0.00000000  Rejected
+## PercentSalaryHike        -0.50772436 -0.39353423 -2.3846306  0.7984981 0.00000000  Rejected
+## PerformanceRating        -0.31808044 -0.42223440 -1.6259414  1.2989319 0.00000000  Rejected
+## RelationshipSatisfaction -0.24846688 -0.17118946 -2.2359178  1.8829568 0.01010101  Rejected
+## StandardHours             0.00000000  0.00000000  0.0000000  0.0000000 0.00000000  Rejected
+## StockOptionLevel         -0.13858964 -0.27915163 -1.3313000  1.3612956 0.00000000  Rejected
+## TotalWorkingYears        23.43228145 23.35669874 21.2223486 25.4774469 1.00000000 Confirmed
+## TrainingTimesLastYear    -0.17898195 -0.12674522 -1.4561717  1.1000387 0.00000000  Rejected
+## WorkLifeBalance          -0.72651564 -0.66976520 -3.3129813  1.3362916 0.00000000  Rejected
+## YearsAtCompany           12.65615308 12.65593989 10.4696417 14.5832833 1.00000000 Confirmed
+## YearsInCurrentRole        8.78509322  8.74225425  7.1264702 11.4225586 1.00000000 Confirmed
+## YearsSinceLastPromotion   4.20847203  4.11762036  2.2716190  6.5677041 0.96969697 Confirmed
+## YearsWithCurrManager      7.06439087  7.05874287  5.0921357  9.0321690 1.00000000 Confirmed</code></pre>
 <pre class="r"><code>set.seed(4)
 trainIndicesMLR = sample(seq(1:dim(work_data2)[1]),round(.7*dim(work_data2)[1]))
 trainMLR = work_data2[trainIndicesMLR,]
@@ -1304,14 +1158,9 @@ fit = lm(MonthlyIncome ~ Age + Attrition + Department + Education + JobLevel + J
 preds = predict(fit, newdata=testMLR)
 
 #install.packages(&quot;Metrics&quot;)
-library(Metrics)</code></pre>
-<pre><code>## Warning: package &#39;Metrics&#39; was built under R version 4.0.5</code></pre>
-<pre><code>## 
-## Attaching package: &#39;Metrics&#39;</code></pre>
-<pre><code>## The following objects are masked from &#39;package:caret&#39;:
-## 
-##     precision, recall</code></pre>
-<pre class="r"><code>rmse(testMLR$MonthlyIncome, preds) #996.4812</code></pre>
+library(Metrics)
+
+rmse(testMLR$MonthlyIncome, preds) #996.4812</code></pre>
 <pre><code>## [1] 988.8186</code></pre>
 <pre class="r"><code>fit1 = lm(MonthlyIncome ~ Attrition + Department + Education + JobLevel + JobRole + NumCompaniesWorked + TotalWorkingYears
          + YearsAtCompany + YearsInCurrentRole + YearsSinceLastPromotion + YearsWithCurrManager, data=trainMLR)
@@ -1484,32 +1333,23 @@ head(comppreds)</code></pre>
   meanYearsSincePromo = mean(YearsSinceLastPromotion),
   meanYearsWithMan = mean(YearsWithCurrManager)
 )</code></pre>
-<pre><code>## Warning in mean.default(Education): argument is not numeric or logical:
-## returning NA
+<pre><code>## Warning in mean.default(Education): argument is not numeric or logical: returning NA
 
-## Warning in mean.default(Education): argument is not numeric or logical:
-## returning NA
+## Warning in mean.default(Education): argument is not numeric or logical: returning NA
 
-## Warning in mean.default(Education): argument is not numeric or logical:
-## returning NA
+## Warning in mean.default(Education): argument is not numeric or logical: returning NA
 
-## Warning in mean.default(Education): argument is not numeric or logical:
-## returning NA
+## Warning in mean.default(Education): argument is not numeric or logical: returning NA
 
-## Warning in mean.default(Education): argument is not numeric or logical:
-## returning NA
+## Warning in mean.default(Education): argument is not numeric or logical: returning NA
 
-## Warning in mean.default(Education): argument is not numeric or logical:
-## returning NA
+## Warning in mean.default(Education): argument is not numeric or logical: returning NA
 
-## Warning in mean.default(Education): argument is not numeric or logical:
-## returning NA
+## Warning in mean.default(Education): argument is not numeric or logical: returning NA
 
-## Warning in mean.default(Education): argument is not numeric or logical:
-## returning NA
+## Warning in mean.default(Education): argument is not numeric or logical: returning NA
 
-## Warning in mean.default(Education): argument is not numeric or logical:
-## returning NA</code></pre>
+## Warning in mean.default(Education): argument is not numeric or logical: returning NA</code></pre>
 <pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
