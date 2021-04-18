@@ -498,7 +498,7 @@ The best model we found was a Naive Bayes model with Age, JobInvolvement, JobLev
 
 ```{r predict attrition}
 #create predictions
-compset_noAtt = read.csv(file.choose()) #CaseStudy2COmpSet No Attrition
+compset_noAtt = read.csv(file.choose()) #CaseStudy2CompSet No Attrition
 
 for(i in 1:ncol(compset_noAtt)){
   if (sapply(compset_noAtt, class)[i] == "character"){
@@ -516,7 +516,12 @@ for(i in 1:ncol(compset_noAtt)){
 }
 
 model = naiveBayes(work_trainNB[,c("Age","JobInvolvement","JobLevel","JobRole","MaritalStatus","MonthlyIncome","OverTime","StockOptionLevel","TotalWorkingYears","WorkLifeBalance","YearsAtCompany","YearsWithCurrManager","JobSatisfaction", "NumCompaniesWorked")], work_trainNB$Attrition, laplace = 1)
-att_preds = predict(model, compset_noAtt)
+
+
+att_preds = data.frame("ID" = compset_noAtt$ID, "Attrition" = predict(model, compset_noAtt))
+head(att_preds)
+
+levels(att_preds$Attrition) = list("No" = 2.28216832911821, "Yes" = -0.437676117913082)
 
 
 write.csv(att_preds, "Case2PredictionsEndler Attrition.csv", row.names=FALSE)
@@ -668,7 +673,9 @@ for(i in 1:ncol(compset_noSal)){
 compset_noSal$Education = as.factor(compset_noSal$Education)
 compset_noSal$JobLevel = as.factor(compset_noSal$JobLevel)
 
-comppreds = predict(fit9, newdata=compset_noSal)
+comppreds = data.frame("ID" = compset_noSal$ï..ID, "MonthlySalary" = predict(fit9, newdata=compset_noSal))
+
+head(comppreds)
 
 write.csv(comppreds, "Case2PredictionsEndler Salary.csv", row.names=FALSE)
 ```
